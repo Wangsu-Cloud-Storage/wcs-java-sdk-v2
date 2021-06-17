@@ -163,7 +163,7 @@ public class Constants {
 
     public static final String WOS_SDK_VERSION = "1.0.0";
 
-    public static final String USER_AGENT_VALUE = "wos-sdk-java-rest-v2/" + Constants.WOS_SDK_VERSION;
+    public static final String USER_AGENT_VALUE = "wcs-java-sdk-v2/" + Constants.WOS_SDK_VERSION;
 
     public static final String DEFAULT_ENCODING = "UTF-8";
 
