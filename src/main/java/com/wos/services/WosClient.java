@@ -89,7 +89,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *
      * @param endPoint
      *            WOS endpoint
-     * @param , regionName
+     * @param regionName
      *            the region name
      *
      */
@@ -118,7 +118,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *
      * @param config
      *            Configuration parameters of WosClient
-     * @param , regionName
+     * @param regionName
      *            the region name
      *
      */
@@ -173,7 +173,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *            SK in the access key
      * @param config
      *            Configuration parameters of WosClient
-     * @param , regionName
+     * @param regionName
      *            the region name
      *
      */
@@ -214,7 +214,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *            Security token
      * @param endPoint
      *            WOS endpoint
-     * @param , regionName
+     * @param regionName
      *            the region name
      *
      */
@@ -255,7 +255,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *            Security token
      * @param config
      *            Configuration parameters of WosClient
-     * @param , regionName
+     * @param regionName
      *            the region name
      *
      */
