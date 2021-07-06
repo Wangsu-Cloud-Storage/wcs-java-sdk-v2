@@ -27,11 +27,16 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     private static final ILogger ILOG = LoggerBuilder.getLogger(WosClient.class);
 
-    private void init(String accessKey, String secretKey, String securityToken, WosConfiguration config) {
+    private void init (String accessKey, String secretKey, String securityToken, WosConfiguration config) {
+        init(accessKey, secretKey, securityToken, config, null);
+    }
+
+    private void init(String accessKey, String secretKey, String securityToken, WosConfiguration config, String regionName) {
         InterfaceLogBean reqBean = new InterfaceLogBean("WosClient", config.getEndPoint(), "");
         ProviderCredentials credentials = new ProviderCredentials(accessKey, secretKey, securityToken);
         WosProperties wosProperties = ServiceUtils.changeFromWosConfiguration(config);
         credentials.setAuthType(config.getAuthType());
+        credentials.setRegionName(regionName);
         this.wosProperties = wosProperties;
         this.credentials = credentials;
         this.keyManagerFactory = config.getKeyManagerFactory();
@@ -82,6 +87,21 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
+     * @param endPoint
+     *            WOS endpoint
+     * @param , regionName
+     *            the region name
+     *
+     */
+    public WosClient(String endPoint, String regionName) {
+        WosConfiguration config = new WosConfiguration();
+        config.setEndPoint(endPoint);
+        this.init("", "", null, config, regionName);
+    }
+
+    /**
+     * Constructor
+     *
      * @param config
      *            Configuration parameters of WosClient
      *
@@ -91,6 +111,22 @@ public class WosClient extends WosService implements Closeable, IWosClient {
             config = new WosConfiguration();
         }
         this.init("", "", null, config);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param config
+     *            Configuration parameters of WosClient
+     * @param , regionName
+     *            the region name
+     *
+     */
+    public WosClient(WosConfiguration config, String regionName) {
+        if (config == null) {
+            config = new WosConfiguration();
+        }
+        this.init("", "", null, config, regionName);
     }
 
     /**
@@ -132,6 +168,26 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      * Constructor
      *
      * @param accessKey
+     *            AK in the access key
+     * @param secretKey
+     *            SK in the access key
+     * @param config
+     *            Configuration parameters of WosClient
+     * @param , regionName
+     *            the region name
+     *
+     */
+    public WosClient(String accessKey, String secretKey, WosConfiguration config, String regionName) {
+        if (config == null) {
+            config = new WosConfiguration();
+        }
+        this.init(accessKey, secretKey, null, config, regionName);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param accessKey
      *            AK in the temporary access key
      * @param secretKey
      *            SK in the temporary access key
@@ -156,6 +212,27 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      *            SK in the temporary access key
      * @param securityToken
      *            Security token
+     * @param endPoint
+     *            WOS endpoint
+     * @param , regionName
+     *            the region name
+     *
+     */
+    public WosClient(String accessKey, String secretKey, String securityToken, String endPoint, String regionName) {
+        WosConfiguration config = new WosConfiguration();
+        config.setEndPoint(endPoint);
+        this.init(accessKey, secretKey, securityToken, config, regionName);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param accessKey
+     *            AK in the temporary access key
+     * @param secretKey
+     *            SK in the temporary access key
+     * @param securityToken
+     *            Security token
      * @param config
      *            Configuration parameters of WosClient
      *
@@ -165,6 +242,28 @@ public class WosClient extends WosService implements Closeable, IWosClient {
             config = new WosConfiguration();
         }
         this.init(accessKey, secretKey, securityToken, config);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param accessKey
+     *            AK in the temporary access key
+     * @param secretKey
+     *            SK in the temporary access key
+     * @param securityToken
+     *            Security token
+     * @param config
+     *            Configuration parameters of WosClient
+     * @param , regionName
+     *            the region name
+     *
+     */
+    public WosClient(String accessKey, String secretKey, String securityToken, WosConfiguration config, String regionName) {
+        if (config == null) {
+            config = new WosConfiguration();
+        }
+        this.init(accessKey, secretKey, securityToken, config, regionName);
     }
 
     public WosClient(IWosCredentialsProvider provider, String endPoint) {
@@ -272,6 +371,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
         }
     }
 
+    @Override
     public TemporarySignatureResponse createTemporarySignature(TemporarySignatureRequest request) {
         ServiceUtils.asserParameterNotNull(request, "V4TemporarySignatureRequest is null");
         InterfaceLogBean reqBean = new InterfaceLogBean("createTemporarySignature", this.getEndpoint(), "");
@@ -779,6 +879,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      * @see com.wos.services.IWosClient#restoreObject(com.wos.services.model.
      * RestoreObjectRequest)
      */
+    @Override
     public RestoreObjectRequest.RestoreObjectStatus restoreObject(final RestoreObjectRequest request) throws WosException {
         ServiceUtils.asserParameterNotNull(request, "RestoreObjectRequest is null");
         return this.doActionWithResult("restoreObject", request.getBucketName(),

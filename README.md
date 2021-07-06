@@ -30,6 +30,11 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 ## 初始化
 WosClient是Java客户端，用于管理存储空间和文件等资源。使用Java SDK发起对象操作请求，您需要初始化一个WosClient实例，并根据需要修改WosConfiguration的默认配置项。
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
@@ -37,7 +42,7 @@ String sk = "*** Provide your Secret Key ***";
 
 ### 创建WosClient实例
 ```
-WosClient wosClient = new WosClient(ak, sk, config);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ### 使用访问WOS
         
@@ -115,7 +120,7 @@ try
     String ak = "*** Provide your Access Key ***";
     String sk = "*** Provide your Secret Key ***";
     // 创建WosClient实例
-    wosClient = new WosClient(ak, sk, endPoint);
+    wosClient = new WosClient(ak, sk, endPoint, regionName);
     // 调用接口进行操作，例如上传对象
     HeaderResponse response = wosClient.putObject("bucketname", "objectname", new File("localfile"));  // localfile为待上传的本地文件路径，需要指定到具体的文件名
     System.out.println(response);
@@ -147,11 +152,16 @@ catch (WosException e)
 ## 1.列举空间
 您可以通过WosClient.listBuckets列举空间。以下代码展示如何获取空间列表：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 列举空间
 List<WosBucket> buckets = wosClient.listBuckets();
@@ -167,11 +177,16 @@ for(WosBucket bucket : buckets){
 ## 2.判断空间是否存在
 您可以通过WosClient.headBucket接口判断该空间是否已存在。以下代码展示如何判断指定空间是否存在：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 boolean exists = wosClient.headBucket("bucketname");
 ```
@@ -191,12 +206,17 @@ SDK支持上传0KB~5GB的对象。流式上传、文件上传的内容大小不�
 ## 1.流式上传
 流式上传使用java.io.InputStream作为对象的数据源。您可以通过WosClient.putObject上传您的数据流到WOS。以下代码展示了如何进行流式上传：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 上传字符串（byte数组）
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 String content = "Hello WOS";
 wosClient.putObject("bucketname", "objectname", new ByteArrayInputStream(content.getBytes()));
@@ -205,7 +225,7 @@ String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 InputStream inputStream = new URL("http://www.a.com").openStream();
 wosClient.putObject("bucketname", "objectname", inputStream);
@@ -214,7 +234,7 @@ String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 FileInputStream fis = new FileInputStream(new File("localfile"));  // 待上传的本地文件路径，需要指定到具体的文件名
 wosClient.putObject("bucketname", "objectname", fis);
@@ -227,11 +247,16 @@ wosClient.putObject("bucketname", "objectname", fis);
 ## 2.文件上传
 文件上传使用本地文件作为对象的数据源。以下代码展示了如何进行文件上传：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 wosClient.putObject("bucketname", "objectname", new File("localfile")); // localfile为待上传的本地文件路径，需要指定到具体的文件名
 ```
@@ -241,11 +266,16 @@ wosClient.putObject("bucketname", "objectname", new File("localfile")); // local
 ## 3.创建文件夹
 WOS本身是没有文件夹的概念的，空间中存储的元素只有对象。创建文件夹实际上是创建了一个大小为0且对象名以“/”结尾的对象，这类对象与其他对象无任何差异，可以进行下载、删除等操作，只是WOS控制台会将这类以“/”结尾的对象以文件夹的方式展示。
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 final String keySuffixWithSlash = "parent_directory/";
 wosClient.putObject("bucketname", keySuffixWithSlash, new ByteArrayInputStream(new byte[0]));
@@ -268,11 +298,16 @@ wosClient.putObject("bucketname", keySuffixWithSlash + "objectname", new ByteArr
 ## 设置对象长度
 您可以通过ObjectMetadata.setContentLength来设置对象长度。以下代码展示如何设置对象长度：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ObjectMetadata metadata = new ObjectMetadata();
 metadata.setContentLength(1024 * 1024L);// 1MB
@@ -282,11 +317,16 @@ wosClient.putObject("bucketname", "objectname", new File("localfile"), metadata)
 ## 设置对象MIME类型
 您可以通过ObjectMetadata.setContentType来设置对象MIME类型。以下代码展示如何设置对象MIME类型：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 上传图片
 ObjectMetadata metadata = new ObjectMetadata();
@@ -298,11 +338,16 @@ wosClient.putObject("bucketname", "objectname.jpg", new File("localimage.jpg"), 
 ## 设置对象MD5值
 您可以通过ObjectMetadata.setContentMd5来设置对象MD5值。以下代码展示如何设置对象MD5值：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 // 上传图片
 ObjectMetadata metadata = new ObjectMetadata();
 metadata.setContentMd5("your md5 which should be encoded by base64");
@@ -318,12 +363,17 @@ wosClient.putObject("bucketname", "objectname", new File("localimage.jpg"), meta
 ## 设置对象存储类型
 您可以通过ObjectMetadata.setObjectStorageClass来设置对象存储类型。以下代码展示如何设置对象存储类型：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ObjectMetadata metadata = new ObjectMetadata();
 // 设置对象存储类型为低频访问存储
@@ -338,11 +388,16 @@ wosClient.putObject("bucketname", "objectname", new File("localfile"), metadata)
 ## 设置对象自定义元数据
 您可以通过ObjectMetadata.addUserMetadata来设置对象自定义元数据。以下代码展示如何设置对象自定义元数据：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ObjectMetadata metadata = new ObjectMetadata();
 metadata.addUserMetadata("property1", "property-value1");
@@ -383,11 +438,16 @@ wosClient.putObject("bucketname", "objectname", new File("localfile"), metadata)
 <table class="relative-table wrapped confluenceTable"><colgroup><col style="width: 16.3683%;" /><col style="width: 44.6292%;" /><col style="width: 39.0026%;" /></colgroup><tbody><tr><th class="confluenceTh">参数</th><th class="confluenceTh">作用</th><th class="confluenceTh">WOS Java SDK对应方法</th></tr><tr><td class="confluenceTd">bucketName</td><td class="confluenceTd">空间名称</td><td class="confluenceTd"><br />initiateMultipartUpload.setBucketName</td></tr><tr><td class="confluenceTd">objectKey</td><td class="confluenceTd">设置分段上传任务所属的对象名</td><td class="confluenceTd">initiateMultipartUpload.setObjectKey</td></tr><tr><td class="confluenceTd">expires</td><td class="confluenceTd">设置分段上传任务最终生成对象的过期时间，正整数。</td><td class="confluenceTd">initiateMultipartUpload.setExpires</td></tr><tr><td class="confluenceTd">metadata</td><td class="confluenceTd">设置对象属性，支持content-type，用户自定义元数据</td><td class="confluenceTd">initiateMultipartUpload.setMetadata</td></tr></tbody></table>
 
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("bucketname", "objectname");
 ObjectMetadata metadata = new ObjectMetadata();
@@ -409,12 +469,17 @@ System.out.println("\t" + uploadId);
 
 您可以通过WosClient.uploadPart上传段：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 List<PartEtag> partEtags = new ArrayList<PartEtag>();
 // 上传第一段
@@ -462,12 +527,17 @@ partEtags.add(new PartEtag(result.getEtag(), result.getPartNumber()));
 
 您可以通过WosClient.completeMultipartUpload合并段：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 List<PartEtag> partEtags = new ArrayList<PartEtag>();
 // 第一段
@@ -493,13 +563,18 @@ wosClient.completeMultipartUpload(request);
 ### 并发分段上传
 分段上传的主要目的是解决大文件上传或网络条件较差的情况。下面的示例代码展示了如何使用分段上传并发上传大文件：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 final String bucketName = "bucketname";
 final String objectKey = "objectname";
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 初始化线程池
 ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -586,12 +661,17 @@ wosClient.completeMultipartUpload(completeMultipartUploadRequest);
 
 您可以通过WosClient.abortMultipartUpload取消分段上传任务：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 AbortMultipartUploadRequest request = new AbortMultipartUploadRequest("bucketname", "objectname", uploadId);
 
@@ -607,12 +687,17 @@ wosClient.abortMultipartUpload(request);
 
 **简单列举**
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 //列举已上传的段，其中uploadId来自于initiateMultipartUpload        
 ListPartsRequest request = new ListPartsRequest("bucketname", "objectname");
@@ -637,12 +722,17 @@ for(Multipart part : result.getMultipartList()){
 **列举所有段**
 由于WosClient.listParts只能列举至多1000个段，如果段数量大于1000，列举所有分段请参考如下示例：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 列举所有已上传的段，其中uploadId来自于initiateMultipartUpload        
 ListPartsRequest request = new ListPartsRequest("bucketname", "objectname");
@@ -672,12 +762,17 @@ do{
 
 ### 简单列举分段上传任务
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListMultipartUploadsRequest request = new ListMultipartUploadsRequest("bucketname");
 
@@ -694,12 +789,17 @@ for(MultipartUpload upload : result.getMultipartTaskList()){
 
 ### 分页列举全部分段上传任务
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 String uploadId = "upload id from initiateMultipartUpload";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListMultipartUploadsRequest request = new ListMultipartUploadsRequest("bucketname");
 MultipartUploadListing result;
@@ -732,12 +832,17 @@ policy，对应表单中policy字段。
 signature，对应表单中的signature字段。
 以下代码展示了如何生成基于表单上传的请求参数：
 
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "http://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 PostSignatureRequest request = new PostSignatureRequest();
 // 设置表单参数
@@ -810,12 +915,17 @@ WOS Java SDK提供了丰富的对象下载接口，您可以通过WosClient.getO
 ### 1.流式下载
 以下代码展示了如何进行流式下载：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 WosObject wosObject = WosClient.getObject("bucketname", "objectname");
 
@@ -843,12 +953,17 @@ input.close();
 ## 2.范围下载
 如果只需要下载对象的其中一部分数据，可以使用范围下载，下载指定范围的数据。如果指定的下载范围是0~1000，则返回第0到第1000个字节的数据，包括第1000个，共1001字节的数据，即[0， 1000]。如果指定的范围无效，则返回整个对象的数据。以下代码展示了如何进行范围下载：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 GetObjectRequest request = new GetObjectRequest("bucketname", "objectname");
 // 指定开始和结束范围
@@ -883,12 +998,17 @@ in.close();
 
 以下代码展示了如何进行限定条件下载：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 GetObjectRequest request = new GetObjectRequest("bucketname", "objectname");
 request.setRangeStart(0l);
@@ -907,12 +1027,17 @@ wosObject.getObjectContent().close();
 
 以下代码展示了如何重写响应头：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 GetObjectRequest request = new GetObjectRequest("bucketname", "objectname");
 ObjectRepleaceMetadata replaceMetadata = new ObjectRepleaceMetadata();
@@ -928,12 +1053,17 @@ wosObject.getObjectContent().close();
 ## 5.获取自定义元数据
 下载对象成功后会返回对象的自定义元数据。以下代码展示了如何获取自定义元数据：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 上传对象，设置自定义元数据
 PutObjectRequest request = new PutObjectRequest("bucketname", "objectname");
@@ -952,12 +1082,17 @@ wosObject.getObjectContent().close();
 ## 6.下载归档存储对象
 如果要下载归档存储对象，需要先将归档存储对象取回，您可以通过WosClient.restoreObject取回归档存储对象。以下代码展示了如何下载归档存储对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 RestoreObjectRequest request = new RestoreObjectRequest();
 request.setBucketName("bucketname");
@@ -980,12 +1115,17 @@ wosObject.getObjectContent().close();
 ## 1.设置对象属性
 您可以通过WosClient.setObjectMetadata来设置对象属性，包括对象自定义元数据等信息。以下代码展示了如何设置对象属性：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 SetObjectMetadataRequest request = new SetObjectMetadataRequest("bucketname", "objectname");
 request.addUserMetadata("property1", "property-value1");
@@ -998,12 +1138,17 @@ System.out.println("\t" + metadata.getUserMetadata("property1"));
 ## 2.获取对象属性
 您可以通过WosClient.getObjectMetadata来获取对象属性，包括对象长度，对象MIME类型，对象自定义元数据等信息。以下代码展示了如何获取对象属性：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ObjectMetadata metadata = wosClient.getObjectMetadata("bucketname", "objectname");
 System.out.println("\t" + metadata.getContentType());
@@ -1014,12 +1159,17 @@ System.out.println("\t" + metadata.getUserMetadata("property"));
 ## 3.获取对象访问权限
 您可以通过WosClient.getObjectAcl获取对象的访问权限。以下代码展示如何获取对象访问权限：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 AccessControlList acl = wosClient.getObjectAcl("bucketname", "objectname");
 System.out.println(acl);
@@ -1035,12 +1185,17 @@ System.out.println(acl);
 ### 简单列举
 以下代码展示如何简单列举对象，最多返回1000个对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ObjectListing result = wosClient.listObjects("bucketname");
 for(WosObject wosObject : result.getObjects()){
@@ -1055,12 +1210,17 @@ for(WosObject wosObject : result.getObjects()){
 ### 指定数目列举
 以下代码展示如何指定数目列举对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 // 只列举100个对象
@@ -1076,12 +1236,17 @@ for(WosObject wosObject : result.getObjects()){
 
 以下代码展示如何指定前缀列举对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 // 设置列举带有prefix前缀的100个对象
@@ -1097,12 +1262,17 @@ for(WosObject wosObject : result.getObjects()){
 ### 指定起始位置列举
 以下代码展示如何指定起始位置列举对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 // 设置列举对象名字典序在"test"之后的100个对象
@@ -1118,12 +1288,17 @@ for(WosObject wosObject : result.getObjects()){
 ### 分页列举全部对象
 以下代码展示分页列举全部对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 // 设置每页100个对象
@@ -1144,11 +1319,16 @@ do{
 ### 列举文件夹中的所有对象
 WOS本身是没有文件夹的概念的，空间中存储的元素只有对象。文件夹对象实际上是一个大小为0且对象名以“/”结尾的对象，将这个文件夹对象名作为前缀，即可模拟列举文件夹中对象的功能。以下代码展示如何列举文件夹中的对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 // 设置文件夹对象名"dir/"为前缀
@@ -1171,12 +1351,17 @@ do{
 ### 按文件夹分组列举所有对象
 以下代码展示如何按文件夹分组，列举空间内所有对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 ListObjectsRequest request = new ListObjectsRequest("bucketname");
 request.setMaxKeys(1000);
@@ -1216,12 +1401,17 @@ static void listObjectsByPrefix(WosClient wosClient, ListObjectsRequest request,
 ### 删除单个对象
 您可以通过WosClient.deleteObject删除单个对象。以下代码展示如何删除单个对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 wosClient.deleteObject("bucketname", "objectname");
 ```
 
@@ -1229,10 +1419,15 @@ wosClient.deleteObject("bucketname", "objectname");
 您可以通过WosClient.deleteObjects批量删除对象，每次最多删除1000个对象。
 以下代码展示了如何进行批量删除空间内所有对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest("bucketname");
 wosClient.deleteObjects(deleteRequest);
@@ -1253,12 +1448,17 @@ wosClient.deleteObjects(deleteRequest);
 ### 简单复制
 以下代码展示了如何进行简单复制：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 try{
     CopyObjectResult result = wosClient.copyObject("sourcebucketname", "sourceobjectname", "destbucketname", "destobjectname");
@@ -1281,12 +1481,17 @@ catch (WosException e)
 ### 重写对象属性
 以下代码展示了如何在复制对象时重写对象属性：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 CopyObjectRequest request = new CopyObjectRequest("sourcebucketname", "sourceobjectname", "destbucketname", "destobjectname");
 // 设置进行对象属性重写
@@ -1316,12 +1521,17 @@ System.out.println("\t" + result.getEtag());
 
 以下代码展示了如何进行限定条件复制：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 CopyObjectRequest request = new CopyObjectRequest("sourcebucketname", "sourceobjectname", "destbucketname", "destobjectname");
 
@@ -1335,6 +1545,11 @@ System.out.println("\t" + result.getEtag());
 ### 分段复制
 分段复制是分段上传的一种特殊情况，即分段上传任务中的段通过复制WOS指定空间中现有对象（或对象的一部分）来实现。您可以通过WosClient.copyPart来复制段。以下代码展示了如何使用分段复制模式复制大对象：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
@@ -1344,7 +1559,7 @@ final String destObjectKey = "destobjectname";
 final String sourceBucketName = "sourcebucketname";
 final String sourceObjectKey = "sourceobjectname";
 // 创建WosClient实例
-final WosClient wosClient = new WosClient(ak, sk, endPoint);
+final WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 // 初始化线程池
 ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -1442,12 +1657,17 @@ WOS允许您对空间设置生命周期规则，实现自动转换对象的存�
 ## 1.设置生命周期规则
 您可以通过WosClient.setBucketLifecycleConfiguration设置空间的生命周期规则。
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 final String ruleId = "delete obsoleted files";
 final String matchPrefix = "obsoleted/";
@@ -1473,11 +1693,16 @@ System.out.println(headerResponse);
 ## 2.查看生命周期规则
 您可以通过WosClient.getBucketLifecycle查看空间的生命周期规则。以下代码展示了如何查看空间的生命周期规则：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 LifecycleConfiguration config = wosClient.getBucketLifecycle("bucketname");
 
@@ -1496,11 +1721,16 @@ for (Rule rule : config.getRules())
 ## 3.删除生命周期规则
 您可以通过WosClient.deleteBucketLifecycle删除空间的生命周期规则。以下代码展示了如何删除空间的生命周期规则：
 ```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(30000);
+config.setConnectionTimeout(10000);
+config.setEndPoint(endPoint);
+
 String endPoint = "https://your-endpoint";
 String ak = "*** Provide your Access Key ***";
 String sk = "*** Provide your Secret Key ***";
 // 创建WosClient实例
-WosClient wosClient = new WosClient(ak, sk, endPoint);
+WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 wosClient.deleteBucketLifecycle("bucketname");
 ```

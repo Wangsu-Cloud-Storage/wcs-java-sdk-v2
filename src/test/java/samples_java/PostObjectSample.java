@@ -34,6 +34,8 @@ public class PostObjectSample
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String objectKey = "my-wos-object-key-demo";
 
     private static AuthTypeEnum authType = AuthTypeEnum.V4;
@@ -49,7 +51,7 @@ public class PostObjectSample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
             
             /*
              * Create sample file

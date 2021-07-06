@@ -72,7 +72,7 @@ public class V4Authentication {
         V4Authentication v4 = new V4Authentication();
         v4.setAk(securityKey.getAccessKey());
         v4.setSk(securityKey.getSecretKey());
-        v4.setRegion(credent.getRegion());
+        v4.setRegion(credent.getRegionName());
         v4.setNowISOTime(date);
 
         List<String> signedAndCanonicalList = v4.getSignedAndCanonicalHeaders(headers);

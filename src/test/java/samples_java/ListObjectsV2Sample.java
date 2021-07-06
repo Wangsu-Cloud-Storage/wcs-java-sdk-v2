@@ -28,6 +28,8 @@ public class ListObjectsV2Sample
     private static WosClient wosClient;
 
     private static String bucketName = "my-wos-bucket-demo";
+
+    private static String regionName = "my-wos-region-demo";
     
     public static void main(String[] args)
         throws UnsupportedEncodingException
@@ -41,7 +43,7 @@ public class ListObjectsV2Sample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
 
             final String content = "Hello WOS";
             final String keyPrefix = "MyObjectKey";

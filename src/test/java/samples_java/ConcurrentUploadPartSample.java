@@ -43,6 +43,8 @@ public class ConcurrentUploadPartSample
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String objectKey = "my-wos-object-key-demo";
     
     private static ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -61,7 +63,7 @@ public class ConcurrentUploadPartSample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
             
             /*
              * Claim a upload id firstly

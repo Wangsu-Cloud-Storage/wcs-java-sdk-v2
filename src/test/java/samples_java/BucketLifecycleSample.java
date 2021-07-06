@@ -19,6 +19,8 @@ public class BucketLifecycleSample {
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String objectKey = "my-wos-object-key-demo";
 
     public static void main(String[] args)
@@ -31,7 +33,7 @@ public class BucketLifecycleSample {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
             doBucketLifecyclePrefix();
             doBucketLifecycleWholeBucket();
 

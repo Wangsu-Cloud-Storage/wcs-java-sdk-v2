@@ -18,6 +18,8 @@ public class HeadBucketSample {
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     public static void main(String[] args) throws IOException {
         WosConfiguration config = new WosConfiguration();
         config.setSocketTimeout(30000);
@@ -27,7 +29,7 @@ public class HeadBucketSample {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
 
             boolean exists = wosClient.headBucket(bucketName);
             System.out.println(exists);

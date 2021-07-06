@@ -18,6 +18,8 @@ public class ListBucketsSample {
 
     private static WosClient wosClient;
 
+    private static String regionName = "my-wos-region-demo";
+
     public static void main(String[] args)
             throws IOException {
         WosConfiguration config = new WosConfiguration();
@@ -28,7 +30,7 @@ public class ListBucketsSample {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
 
             List<WosBucket> buckets = wosClient.listBuckets();
             for(WosBucket bucket : buckets){

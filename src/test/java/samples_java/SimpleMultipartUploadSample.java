@@ -30,6 +30,8 @@ public class SimpleMultipartUploadSample
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String objectKey = "my-wos-object-key-demo";
     
     public static void main(String[] args) throws IOException
@@ -43,12 +45,7 @@ public class SimpleMultipartUploadSample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
-            
-            /*
-             * Create bucket 
-             */
-            //wosClient.createBucket(bucketName);
+            wosClient = new WosClient(ak, sk, config, regionName);
             
             /*
              * Step 1: initiate multipart upload

@@ -6,6 +6,7 @@ import com.wos.services.BasicWosCredentialsProvider;
 import com.wos.services.IWosCredentialsProvider;
 import com.wos.services.internal.WosConstraint;
 import com.wos.services.model.AuthTypeEnum;
+import org.apache.commons.lang3.StringUtils;
 
 public class ProviderCredentials {
     protected static final ILogger log = LoggerBuilder.getLogger(ProviderCredentials.class);
@@ -14,8 +15,12 @@ public class ProviderCredentials {
     private static ThreadLocal<AuthTypeEnum> threadLocalAuthType;
     private IWosCredentialsProvider wosCredentialsProvider;
 
-    public String getRegion() {
+    public String getRegionName() {
         return WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE;
+    }
+
+    public void setRegionName(String regionName) {
+        WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE = StringUtils.isEmpty(regionName) ? "default-region" : regionName;
     }
 
     public ProviderCredentials(String accessKey, String secretKey) {

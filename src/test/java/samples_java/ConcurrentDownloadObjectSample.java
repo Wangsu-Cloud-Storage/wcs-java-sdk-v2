@@ -31,6 +31,8 @@ public class ConcurrentDownloadObjectSample
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String objectKey = "my-wos-object-key-demo";
     
     private static String localFilePath = "/temp/" + objectKey;
@@ -54,7 +56,7 @@ public class ConcurrentDownloadObjectSample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
             
             /*
              * Create bucket 

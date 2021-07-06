@@ -27,6 +27,8 @@ public class ConcurrentCopyPartSample
 
     private static String bucketName = "my-wos-bucket-demo";
 
+    private static String regionName = "my-wos-region-demo";
+
     private static String sourceBucketName = bucketName;
 
     private static String sourceObjectKey = "my-wos-object-key-demo";
@@ -49,7 +51,7 @@ public class ConcurrentCopyPartSample
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config);
+            wosClient = new WosClient(ak, sk, config, regionName);
             
             /*
              * Upload an object to your source bucket
