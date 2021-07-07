@@ -12,10 +12,16 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 ## 前提条件
 使用Java 1.7及以上版本。您可以通过命令java -version查看Java版本。
 
-## 下载SDK
-通过GitHub下载
-
 ## 安装SDK
+### 在Maven项目中加入依赖项
+```
+<dependency>
+  <groupId>com.chinanetcenter.wcs.sdk</groupId>
+  <artifactId>wcs-java-sdk-v2</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
+### 通过GitHub下载
 您可以通过以下方式安装SDK。
 
 在Intellij IDEA项目中导入JAR包
@@ -27,6 +33,7 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 3. 将解压后文件夹中的文件wcs-java-sdk-rest-v2-1.0.0.jar以及lib文件夹下的所有JAR文件拷贝到您的项目中。
 4. 在Intellij IDEA中选择您的工程，右键选择File->Project Structure->Modules->Dependencies->+->JARs or directories 。
 5. 选中拷贝的所有JAR文件，导入到External Libraries中。
+
 ## 初始化
 WosClient是Java客户端，用于管理存储空间和文件等资源。使用Java SDK发起对象操作请求，您需要初始化一个WosClient实例，并根据需要修改WosConfiguration的默认配置项。
 ```
