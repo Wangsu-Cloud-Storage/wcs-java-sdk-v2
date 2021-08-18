@@ -10,7 +10,7 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 进行各类操作前，您需要先安装Java SDK。
 
 ## 前提条件
-使用Java 1.7及以上版本。您可以通过命令java -version查看Java版本。
+使用Java 8及以上版本。您可以通过命令java -version查看Java版本。
 
 ## 安装SDK
 ### 在Maven项目中加入依赖项
