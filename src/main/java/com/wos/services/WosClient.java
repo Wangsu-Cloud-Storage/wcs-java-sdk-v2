@@ -5,11 +5,11 @@ import com.wos.log.InterfaceLogBean;
 import com.wos.log.LoggerBuilder;
 import com.wos.services.exception.WosException;
 import com.wos.services.internal.*;
+import com.wos.services.internal.security.BasicSecurityKey;
 import com.wos.services.internal.security.ProviderCredentials;
-import com.wos.services.internal.utils.AccessLoggerUtils;
-import com.wos.services.internal.utils.ServiceUtils;
-import com.wos.services.internal.utils.UrlCodecUtil;
+import com.wos.services.internal.utils.*;
 import com.wos.services.model.*;
+import com.wos.services.internal.Constants.CommonHeaders;
 
 import java.io.Closeable;
 import java.io.File;
@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * WosClient
@@ -269,10 +270,8 @@ public class WosClient extends WosService implements Closeable, IWosClient {
         ServiceUtils.asserParameterNotNull(request, "V4TemporarySignatureRequest is null");
         InterfaceLogBean reqBean = new InterfaceLogBean("createTemporarySignature", this.getEndpoint(), "");
         try {
-            TemporarySignatureResponse response = this.createTemporarySignature((TemporarySignatureRequest) request);
-            TemporarySignatureResponse res = new TemporarySignatureResponse(response.getSignedUrl());
-            res.getActualSignedRequestHeaders().putAll(response.getActualSignedRequestHeaders());
-            return res;
+            TemporarySignatureResponse response = this.createV4TemporarySignature(request);
+            return response;
         } catch (Exception e) {
             reqBean.setRespTime(new Date());
             if (ILOG.isErrorEnabled()) {
@@ -280,6 +279,152 @@ public class WosClient extends WosService implements Closeable, IWosClient {
             }
             throw new WosException(e.getMessage(), e);
         }
+    }
+
+    protected TemporarySignatureResponse createV4TemporarySignature(TemporarySignatureRequest request)
+            throws Exception {
+        StringBuilder canonicalUri = new StringBuilder();
+        String bucketName = request.getBucketName();
+        String endpoint = this.getEndpoint();
+        String objectKey = request.getObjectKey();
+
+        if (!this.isCname()) {
+            if (ServiceUtils.isValid(bucketName)) {
+                if (this.isPathStyle() || !ServiceUtils.isBucketNameValidDNSName(bucketName)) {
+                    canonicalUri.append("/").append(bucketName.trim());
+                } else {
+                    endpoint = bucketName.trim() + "." + endpoint;
+                }
+                if (ServiceUtils.isValid(objectKey)) {
+                    canonicalUri.append("/").append(RestUtils.uriEncode(objectKey, false));
+                }
+            }
+        } else {
+            if (ServiceUtils.isValid(objectKey)) {
+                canonicalUri.append("/").append(RestUtils.uriEncode(objectKey, false));
+            }
+        }
+
+        if (this.isCname()) {
+            endpoint = this.getEndpoint();
+        }
+
+        Map<String, String> headers = new TreeMap<String, String>();
+        headers.putAll(request.getHeaders());
+        Map<String, Object> queryParams = new TreeMap<String, Object>();
+        queryParams.putAll(request.getQueryParams());
+
+        Date requestDate = request.getRequestDate();
+        if (requestDate == null) {
+            requestDate = new Date();
+        }
+        if ((this.getHttpsOnly() && this.getHttpsPort() == 443) || (!this.getHttpsOnly() && this.getHttpPort() == 80)) {
+            headers.put(CommonHeaders.HOST, endpoint);
+        } else {
+            headers.put(CommonHeaders.HOST,
+                    endpoint + ":" + (this.getHttpsOnly() ? this.getHttpsPort() : this.getHttpPort()));
+        }
+
+        BasicSecurityKey securityKey = this.getProviderCredentials().getSecurityKey();
+        String accessKey = securityKey.getAccessKey();
+        String secretKey = securityKey.getSecretKey();
+        String securityToken = securityKey.getSecurityToken();
+        if (!queryParams.containsKey(this.getIHeaders().securityTokenHeader())) {
+            if (ServiceUtils.isValid(securityToken)) {
+                queryParams.put(this.getIHeaders().securityTokenHeader(), securityToken);
+            }
+        }
+
+        String requestMethod = request.getMethod() != null ? request.getMethod().getOperationType() : "GET";
+
+        StringBuilder signedHeaders = new StringBuilder();
+        StringBuilder canonicalHeaders = new StringBuilder();
+        int index = 0;
+        Map<String, String> actualSignedRequestHeaders = new TreeMap<String, String>();
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            if (ServiceUtils.isValid(entry.getKey())) {
+                String key = entry.getKey().toLowerCase().trim();
+                boolean validKey = false;
+                if (Constants.ALLOWED_REQUEST_HTTP_HEADER_METADATA_NAMES.contains(key)
+                        || key.startsWith(this.getRestHeaderPrefix()) || key.startsWith(Constants.WOS_HEADER_PREFIX)) {
+                    validKey = true;
+                } else if ("PUT".equals(requestMethod) || "POST".equals(requestMethod)) {
+                    key = this.getRestMetadataPrefix() + key;
+                    validKey = true;
+                }
+                if (validKey) {
+                    String value = entry.getValue() == null ? "" : entry.getValue().trim();
+                    if (key.startsWith(this.getRestMetadataPrefix())) {
+                        value = RestUtils.uriEncode(value, true);
+                    }
+                    signedHeaders.append(key);
+                    canonicalHeaders.append(key).append(":").append(value).append("\n");
+                    if (index++ != headers.size() - 1) {
+                        signedHeaders.append(";");
+                    }
+                    actualSignedRequestHeaders.put(entry.getKey().trim(), value);
+                }
+            }
+        }
+
+        String shortDate = ServiceUtils.getShortDateFormat().format(requestDate);
+        String longDate = ServiceUtils.getLongDateFormat().format(requestDate);
+        String regionName = credentials.getRegionName();
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Algorithm", Constants.V4_ALGORITHM);
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Credential", this.getCredential(shortDate, accessKey, regionName));
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Date", longDate);
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Expires",
+                request.getExpires() <= 0 ? WosConstraint.DEFAULT_EXPIRE_SECONEDS : request.getExpires());
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "SignedHeaders", signedHeaders.toString());
+
+        StringBuilder canonicalQueryString = new StringBuilder();
+
+        StringBuilder signedUrl = new StringBuilder();
+        if (this.getHttpsOnly()) {
+            String securePortStr = this.getHttpsPort() == 443 ? "" : ":" + this.getHttpsPort();
+            signedUrl.append("https://").append(endpoint).append(securePortStr);
+        } else {
+            String insecurePortStr = this.getHttpPort() == 80 ? "" : ":" + this.getHttpPort();
+            signedUrl.append("http://").append(endpoint).append(insecurePortStr);
+        }
+        signedUrl.append(canonicalUri).append("?");
+
+        index = 0;
+        for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
+            if (ServiceUtils.isValid(entry.getKey())) {
+                String key = RestUtils.uriEncode(entry.getKey(), false);
+
+                canonicalQueryString.append(key).append("=");
+                signedUrl.append(key);
+                if (entry.getValue() != null) {
+                    String value = RestUtils.uriEncode(entry.getValue().toString(), false);
+                    canonicalQueryString.append(value);
+                    signedUrl.append("=").append(value);
+                } else {
+                    canonicalQueryString.append("");
+                }
+                if (index++ != queryParams.size() - 1) {
+                    canonicalQueryString.append("&");
+                    signedUrl.append("&");
+                }
+            }
+        }
+
+        StringBuilder canonicalRequest = new StringBuilder(requestMethod).append("\n")
+                .append(canonicalUri.length() == 0 ? "/" : canonicalUri).append("\n").append(canonicalQueryString)
+                .append("\n").append(canonicalHeaders).append("\n").append(signedHeaders).append("\n")
+                .append("UNSIGNED-PAYLOAD");
+
+        StringBuilder stringToSign = new StringBuilder(Constants.V4_ALGORITHM).append("\n").append(longDate)
+                .append("\n").append(shortDate).append("/").append(regionName)
+                .append("/").append(Constants.SERVICE).append("/").append(Constants.REQUEST_TAG).append("\n")
+                .append(V4Authentication.byteToHex((V4Authentication.sha256encode(canonicalRequest.toString()))));
+        signedUrl.append("&").append(Constants.WOS_HEADER_PREFIX_CAMEL).append("Signature=")
+                .append(V4Authentication.caculateSignature(stringToSign.toString(), shortDate, secretKey, regionName));
+        TemporarySignatureResponse response = new TemporarySignatureResponse(signedUrl.toString());
+        actualSignedRequestHeaders.put(CommonHeaders.USER_AGENT, Constants.USER_AGENT_VALUE);
+        response.getActualSignedRequestHeaders().putAll(actualSignedRequestHeaders);
+        return response;
     }
 
     /**

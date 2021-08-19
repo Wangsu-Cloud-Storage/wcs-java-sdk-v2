@@ -161,7 +161,7 @@ public class Constants {
 
     public static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
 
-    public static final String WOS_SDK_VERSION = "1.0.0";
+    public static final String WOS_SDK_VERSION = "1.0.3";
 
     public static final String USER_AGENT_VALUE = "wcs-java-sdk-v2/" + Constants.WOS_SDK_VERSION;
 

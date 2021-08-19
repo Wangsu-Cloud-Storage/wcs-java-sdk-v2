@@ -18,7 +18,7 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 <dependency>
   <groupId>com.chinanetcenter.wcs.sdk</groupId>
   <artifactId>wcs-java-sdk-v2</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 ### 通过GitHub下载

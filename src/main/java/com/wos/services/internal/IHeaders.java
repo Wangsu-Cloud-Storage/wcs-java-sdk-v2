@@ -38,4 +38,7 @@ public interface IHeaders {
     String copySourceIfNoneMatchHeader();
 
     String copySourceIfMatchHeader();
+
+    String securityTokenHeader();
+
 }

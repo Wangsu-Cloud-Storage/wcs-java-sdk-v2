@@ -106,4 +106,9 @@ public class WosHeaders implements IHeaders {
     public String contentSha256Header() {
         return this.headerPrefix() + "content-sha256";
     }
+
+    @Override
+    public String securityTokenHeader() {
+        return this.headerPrefix() + "security-token";
+    }
 }
