@@ -18,8 +18,7 @@ import com.wos.services.model.*;
  * This sample demonstrates how to upload multiparts to WOS
  * using the WOS SDK for Java.
  */
-public class SimpleMultipartUploadSample
-{
+public class SimpleMultipartUploadSample {
     private static final String endPoint = "https://your-endpoint";
 
     private static final String ak = "*** Provide your Access Key ***";
@@ -33,20 +32,19 @@ public class SimpleMultipartUploadSample
     private static String regionName = "my-wos-region-demo";
 
     private static String objectKey = "my-wos-object-key-demo";
-    
-    public static void main(String[] args) throws IOException
-    {
+
+    public static void main(String[] args) throws IOException {
         WosConfiguration config = new WosConfiguration();
         config.setSocketTimeout(300000);
         config.setConnectionTimeout(100000);
         config.setEndPoint(endPoint);
-        try
-        {
+        config.setRegionName(regionName);
+        try {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
-            
+            wosClient = new WosClient(ak, sk, config);
+
             /*
              * Step 1: initiate multipart upload
              */
@@ -56,7 +54,7 @@ public class SimpleMultipartUploadSample
             request.setObjectKey(objectKey);
             InitiateMultipartUploadResult result = wosClient.initiateMultipartUpload(request);
             System.out.println(result);
-            
+
             /*
              * Step 2: upload a part
              */
@@ -70,7 +68,7 @@ public class SimpleMultipartUploadSample
             ListPartsResult listPartsResult = wosClient.listParts(listPartsRequest);
             System.out.println(listPartsResult);
 
-            AbortMultipartUploadRequest abortMultipartUploadRequest=new AbortMultipartUploadRequest();
+            AbortMultipartUploadRequest abortMultipartUploadRequest = new AbortMultipartUploadRequest();
             abortMultipartUploadRequest.setBucketName(bucketName);
             abortMultipartUploadRequest.setObjectKey(objectKey);
             abortMultipartUploadRequest.setUploadId(result.getUploadId());
@@ -89,47 +87,38 @@ public class SimpleMultipartUploadSample
             partEtag.seteTag(uploadPartResult.getEtag());
             completeMultipartUploadRequest.getPartEtag().add(partEtag);
             wosClient.completeMultipartUpload(completeMultipartUploadRequest);
-        } catch (WosException e)
-        {
+        } catch (WosException e) {
             System.out.println("Response Code: " + e.getResponseCode());
             System.out.println("Error Message: " + e.getErrorMessage());
             System.out.println("Error Code:       " + e.getErrorCode());
             System.out.println("Request ID:      " + e.getErrorRequestId());
             System.out.println("Host ID:           " + e.getErrorHostId());
-        }
-        finally
-        {
-            if (wosClient != null)
-            {
-                try
-                {
+        } finally {
+            if (wosClient != null) {
+                try {
                     /*
                      * Close wos client
                      */
                     wosClient.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                 }
             }
         }
-        
+
     }
-    
+
     private static File createSampleFile()
-        throws IOException
-    {
+            throws IOException {
         File file = File.createTempFile("wos-java-sdk-", ".txt");
         file.deleteOnExit();
-        
+
         Writer writer = new OutputStreamWriter(new FileOutputStream(file));
-        for (int i = 0; i < 1; i++)
-        {
+        for (int i = 0; i < 1; i++) {
             writer.write(UUID.randomUUID() + "\n");
         }
         writer.flush();
         writer.close();
-        
+
         return file;
     }
 }

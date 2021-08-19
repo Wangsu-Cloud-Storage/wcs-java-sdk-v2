@@ -27,6 +27,8 @@ public class WosConfiguration implements Cloneable {
 
     private String endPoint;
 
+    private String regionName;
+
     private int endpointHttpPort;
 
     private int endpointHttpsPort;
@@ -88,6 +90,7 @@ public class WosConfiguration implements Cloneable {
         this.endpointHttpsPort = WosConstraint.HTTPS_PORT_VALUE;
         this.httpsOnly = true;
         this.endPoint = "";
+        this.regionName = WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE;
         this.pathStyle = false;
         this.validateCertificate = false;
         this.verifyResponseContentType = true;
@@ -115,9 +118,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set folder isolators to slashes.
-     * 
-     * @param delimiter
-     *            Folder isolator
+     *
+     * @param delimiter Folder isolator
      */
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
@@ -171,9 +173,8 @@ public class WosConfiguration implements Cloneable {
      * path-style access is enabled while "false" (default) indicates that
      * virtual hosted-style access is enabled. Note: If the path-style access is
      * enabled, new bucket features of WOS 3.0 are not supported.
-     * 
-     * @param disableDns
-     *            Whether to enable path-style access to WOS.
+     *
+     * @param disableDns Whether to enable path-style access to WOS.
      */
 
     public void setDisableDnsBucket(boolean disableDns) {
@@ -184,7 +185,7 @@ public class WosConfiguration implements Cloneable {
      * Obtain the size (bytes) of the socket receive buffer, corresponding to
      * the "java.net.SocketOptions.SO_RVCBUF" parameter. The default value is
      * "-1", indicating that the size is not set.
-     * 
+     *
      * @return Socket receive buffer size
      */
     public int getSocketReadBufferSize() {
@@ -195,9 +196,8 @@ public class WosConfiguration implements Cloneable {
      * Set the size (bytes) of the socket receive buffer, corresponding to the
      * "java.net.SocketOptions.SO_RVCBUF" parameter. The default value is "-1",
      * indicating that the size is not set.
-     * 
-     * @param socketReadBufferSize
-     *            Socket receive buffer size
+     *
+     * @param socketReadBufferSize Socket receive buffer size
      */
     public void setSocketReadBufferSize(int socketReadBufferSize) {
         this.socketReadBufferSize = socketReadBufferSize;
@@ -207,7 +207,7 @@ public class WosConfiguration implements Cloneable {
      * Obtain the size (bytes) of the socket send buffer, corresponding to the
      * "java.net.SocketOptions.SO_SNDBUF" parameter. The default value is "-1",
      * indicating that the size is not set.
-     * 
+     *
      * @return socketSocket send buffer size
      */
     public int getSocketWriteBufferSize() {
@@ -218,9 +218,8 @@ public class WosConfiguration implements Cloneable {
      * Set the size (bytes) of the socket send buffer (in bytes), corresponding
      * to the "java.net.SocketOptions.SO_SNDBUF" parameter. The default value is
      * "-1", indicating that the size is not set.
-     * 
-     * @param socketWriteBufferSize
-     *            socket Socket send buffer size
+     *
+     * @param socketWriteBufferSize socket Socket send buffer size
      */
     public void setSocketWriteBufferSize(int socketWriteBufferSize) {
         this.socketWriteBufferSize = socketWriteBufferSize;
@@ -263,7 +262,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the factory for generating the "KeyManager" array.
-     * 
+     *
      * @return Factory for generating the "KeyManager" array
      */
     public KeyManagerFactory getKeyManagerFactory() {
@@ -272,9 +271,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the factory for generating the "KeyManager" array.
-     * 
-     * @param keyManagerFactory
-     *            Factory for generating the "KeyManager" array
+     *
+     * @param keyManagerFactory Factory for generating the "KeyManager" array
      */
     public void setKeyManagerFactory(KeyManagerFactory keyManagerFactory) {
         this.keyManagerFactory = keyManagerFactory;
@@ -282,7 +280,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the factory for generating the "TrustManager" array.
-     * 
+     *
      * @return Factory for generating the "TrustManager" array
      */
     public TrustManagerFactory getTrustManagerFactory() {
@@ -291,9 +289,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the factory for generating the "TrustManager" array.
-     * 
-     * @param trustManagerFactory
-     *            Factory for generating the "TrustManager" array
+     *
+     * @param trustManagerFactory Factory for generating the "TrustManager" array
      */
     public void setTrustManagerFactory(TrustManagerFactory trustManagerFactory) {
         this.trustManagerFactory = trustManagerFactory;
@@ -302,7 +299,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the identifier specifying whether to verify the domain name
      * ("false" by default).
-     * 
+     *
      * @return Identifier specifying whether to verify the domain name
      */
     public boolean isStrictHostnameVerification() {
@@ -311,9 +308,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the identifier specifying whether to verify the domain name.
-     * 
-     * @param isStrictHostnameVerification
-     *            Identifier specifying whether to verify the domain name
+     *
+     * @param isStrictHostnameVerification Identifier specifying whether to verify the domain name
      */
     public void setIsStrictHostnameVerification(boolean isStrictHostnameVerification) {
         this.isStrictHostnameVerification = isStrictHostnameVerification;
@@ -337,9 +333,8 @@ public class WosConfiguration implements Cloneable {
      * path-style access is enabled while "false" (default) indicates that
      * virtual hosted-style access is enabled. Note: If the path-style access is
      * enabled, new bucket features of WOS 3.0 are not supported.
-     * 
-     * @param pathStyle
-     *            Whether to enable path-style access to WOS.
+     *
+     * @param pathStyle Whether to enable path-style access to WOS.
      */
 
     public void setPathStyle(boolean pathStyle) {
@@ -349,7 +344,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the timeout interval for establishing HTTP/HTTPS connections (in
      * milliseconds, 60,000 milliseconds by default).
-     * 
+     *
      * @return Timeout interval for establishing HTTP/HTTPS connections
      */
     public int getConnectionTimeout() {
@@ -359,9 +354,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the timeout interval for establishing HTTP/HTTPS connections (in
      * milliseconds, 60,000 milliseconds by default).
-     * 
-     * @param connectionTimeout
-     *            Timeout interval for establishing HTTP/HTTPS connections
+     *
+     * @param connectionTimeout Timeout interval for establishing HTTP/HTTPS connections
      */
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
@@ -370,7 +364,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the maximum number of HTTP connections (1000 by default) that can
      * be opened.
-     * 
+     *
      * @return Maximum number of concurrently opened HTTP connections
      */
     public int getMaxConnections() {
@@ -380,9 +374,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the maximum number of HTTP connections (1000 by default) that can be
      * opened.
-     * 
-     * @param maxConnections
-     *            Maximum number of concurrently opened HTTP connections
+     *
+     * @param maxConnections Maximum number of concurrently opened HTTP connections
      */
     public void setMaxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
@@ -391,7 +384,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the maximum number of retry attempts (5 by default) upon a request
      * failure (request exception, or error 500 or 503 on the server).
-     * 
+     *
      * @return Maximum number of retry attempts upon a request failure
      */
     public int getMaxErrorRetry() {
@@ -401,9 +394,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the maximum number of retry attempts (5 by default) upon a request
      * failure (request exception, or error 500 or 503 on the server).
-     * 
-     * @param maxErrorRetry
-     *            Maximum number of retry attempts upon a request failure
+     *
+     * @param maxErrorRetry Maximum number of retry attempts upon a request failure
      */
     public void setMaxErrorRetry(int maxErrorRetry) {
         this.maxErrorRetry = maxErrorRetry;
@@ -412,7 +404,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the timeout interval for data transmission at the socket layer (in
      * milliseconds, 60,000 milliseconds by default).
-     * 
+     *
      * @return Timeout interval for data transmission at the socket layer
      */
     public int getSocketTimeout() {
@@ -422,9 +414,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the timeout interval for data transmission at the socket layer (in
      * milliseconds, 60,000 milliseconds by default).
-     * 
-     * @param socketTimeout
-     *            Timeout interval for data transmission at the socket layer
+     *
+     * @param socketTimeout Timeout interval for data transmission at the socket layer
      */
     public void setSocketTimeout(int socketTimeout) {
         this.socketTimeout = socketTimeout;
@@ -444,7 +435,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the endpoint for accessing WOS.
-     * 
+     *
      * @param endPoint
      *            WOS endpoint
      */
@@ -452,9 +443,18 @@ public class WosConfiguration implements Cloneable {
         this.endPoint = endPoint;
     }
 
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
     /**
      * Obtain the port number of the HTTP request (80 by default).
-     * 
+     *
      * @return Port number of the HTTP request
      */
 
@@ -464,9 +464,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the port number of the HTTP request (80 by default).
-     * 
-     * @param endpointHttpPort
-     *            Port number of the HTTP request
+     *
+     * @param endpointHttpPort Port number of the HTTP request
      */
 
     public void setEndpointHttpPort(int endpointHttpPort) {
@@ -475,7 +474,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the port number of the HTTPS request (443 by default).
-     * 
+     *
      * @return Port number of the HTTPS request
      */
 
@@ -485,9 +484,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the port number of the HTTPS request (443 by default).
-     * 
-     * @param endpointHttpsPort
-     *            Port number of the HTTPS request
+     *
+     * @param endpointHttpsPort Port number of the HTTPS request
      */
 
     public void setEndpointHttpsPort(int endpointHttpsPort) {
@@ -496,9 +494,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Specify whether to use HTTPS to connect WOS ("true" by default).
-     * 
-     * @param httpsOnly
-     *            Identifier specifying whether to use HTTPS to connect WOS
+     *
+     * @param httpsOnly Identifier specifying whether to use HTTPS to connect WOS
      */
 
     public void setHttpsOnly(boolean httpsOnly) {
@@ -522,7 +519,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the proxy configuration.
-     * 
+     *
      * @return Proxy configuration
      */
     public HttpProxyConfiguration getHttpProxy() {
@@ -531,9 +528,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Configure the proxy.
-     * 
-     * @param httpProxy
-     *            HTTP proxy configuration
+     *
+     * @param httpProxy HTTP proxy configuration
      */
     public void setHttpProxy(HttpProxyConfiguration httpProxy) {
         this.httpProxy = httpProxy;
@@ -541,17 +537,12 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Configure the proxy server.
-     * 
-     * @param proxyAddr
-     *            Proxy server address
-     * @param proxyPort
-     *            Proxy server port
-     * @param userName
-     *            Proxy username
-     * @param password
-     *            Proxy password
-     * @param domain
-     *            Proxy domain
+     *
+     * @param proxyAddr Proxy server address
+     * @param proxyPort Proxy server port
+     * @param userName  Proxy username
+     * @param password  Proxy password
+     * @param domain    Proxy domain
      */
 
     public void setHttpProxy(String proxyAddr, int proxyPort, String userName, String password, String domain) {
@@ -560,15 +551,11 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Configure the proxy server.
-     * 
-     * @param proxyAddr
-     *            Proxy server address
-     * @param proxyPort
-     *            Proxy server port
-     * @param userName
-     *            Proxy username
-     * @param password
-     *            Proxy password
+     *
+     * @param proxyAddr Proxy server address
+     * @param proxyPort Proxy server port
+     * @param userName  Proxy username
+     * @param password  Proxy password
      */
     public void setHttpProxy(String proxyAddr, int proxyPort, String userName, String password) {
         this.httpProxy = new HttpProxyConfiguration(proxyAddr, proxyPort, userName, password, null);
@@ -577,9 +564,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the buffer size used for uploading stream objects (in bytes). The
      * default value is 512 KB.
-     * 
-     * @param uploadStreamRetryBufferSize
-     *            Buffer size used for uploading stream objects
+     *
+     * @param uploadStreamRetryBufferSize Buffer size used for uploading stream objects
      */
 
     public void setUploadStreamRetryBufferSize(int uploadStreamRetryBufferSize) {
@@ -589,7 +575,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the buffer size used for uploading stream objects (in bytes). The
      * default value is 512 KB.
-     * 
+     *
      * @return Buffer size used for uploading stream objects
      */
 
@@ -600,7 +586,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Check whether server-side verification is enabled. The default value is
      * "false".
-     * 
+     *
      * @return Identifier specifying whether to enable server-side verification
      */
     public boolean isValidateCertificate() {
@@ -610,10 +596,10 @@ public class WosConfiguration implements Cloneable {
     /**
      * Specify whether to enable server-side certificate verification. The
      * default value is "false".
-     ** 
-     * @param validateCertificate
-     *            Identifier specifying whether to enable server-side
-     *            verification
+     * *
+     *
+     * @param validateCertificate Identifier specifying whether to enable server-side
+     *                            verification
      */
     public void setValidateCertificate(boolean validateCertificate) {
         this.validateCertificate = validateCertificate;
@@ -622,9 +608,9 @@ public class WosConfiguration implements Cloneable {
     /**
      * Check whether "ContentType" in the response is verified. The default
      * value is "true".
-     * 
+     *
      * @return Identifier specifying whether to verify "ContentType" in the
-     *         response
+     * response
      */
     public boolean isVerifyResponseContentType() {
         return verifyResponseContentType;
@@ -633,10 +619,9 @@ public class WosConfiguration implements Cloneable {
     /**
      * Specify whether to verify "ContentType" in the response. The default
      * value is "true".
-     * 
-     * @param verifyResponseContentType
-     *            Identifier specifying whether to verify "ContentType" in the
-     *            response
+     *
+     * @param verifyResponseContentType Identifier specifying whether to verify "ContentType" in the
+     *                                  response
      */
     public void setVerifyResponseContentType(boolean verifyResponseContentType) {
         this.verifyResponseContentType = verifyResponseContentType;
@@ -645,7 +630,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the read cache size used for uploading objects to socket streams
      * (in bytes). The default value is 8192.
-     * 
+     *
      * @return Read cache size used for uploading objects to socket streams
      */
     public int getReadBufferSize() {
@@ -655,9 +640,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the read cache size used for uploading objects to socket streams (in
      * bytes). The default value is 8192.
-     * 
-     * @param readBufferSize
-     *            Read cache size used for uploading objects to socket streams
+     *
+     * @param readBufferSize Read cache size used for uploading objects to socket streams
      */
     public void setReadBufferSize(int readBufferSize) {
         this.readBufferSize = readBufferSize;
@@ -666,7 +650,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the write cache size used for uploading objects to socket streams
      * (in bytes). The default value is 8192.
-     * 
+     *
      * @return Write cache size used for uploading objects to socket streams
      */
     public int getWriteBufferSize() {
@@ -676,9 +660,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the write cache size used for uploading objects to socket streams (in
      * bytes). The default value is 8192.
-     * 
-     * @param writeBufferSize
-     *            Write cache size used for uploading objects to socket streams
+     *
+     * @param writeBufferSize Write cache size used for uploading objects to socket streams
      */
     public void setWriteBufferSize(int writeBufferSize) {
         this.writeBufferSize = writeBufferSize;
@@ -687,9 +670,9 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the idle time for obtaining connections from the connection pool.
      * The unit is millisecond and the default value is 30000.
-     * 
+     *
      * @return Maximum idle time for obtaining connections from the connection
-     *         pool
+     * pool
      */
     public int getIdleConnectionTime() {
         return idleConnectionTime;
@@ -698,10 +681,9 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the idle time for obtaining connections from the connection pool. The
      * unit is millisecond and the default value is 30000.
-     * 
-     * @param idleConnectionTime
-     *            Maximum idle time for obtaining connections from the
-     *            connection pool
+     *
+     * @param idleConnectionTime Maximum idle time for obtaining connections from the
+     *                           connection pool
      */
     public void setIdleConnectionTime(int idleConnectionTime) {
         this.idleConnectionTime = idleConnectionTime;
@@ -710,7 +692,7 @@ public class WosConfiguration implements Cloneable {
     /**
      * Obtain the maximum number of idle connections in the connection pool. The
      * default value is 1000.
-     * 
+     *
      * @return Maximum number of idle connections in the connection pool
      */
     public int getMaxIdleConnections() {
@@ -720,9 +702,8 @@ public class WosConfiguration implements Cloneable {
     /**
      * Set the maximum number of idle connections in the connection pool. The
      * default value is 1000.
-     * 
-     * @param maxIdleConnections
-     *            Maximum number of idle connections in the connection pool
+     *
+     * @param maxIdleConnections Maximum number of idle connections in the connection pool
      */
     public void setMaxIdleConnections(int maxIdleConnections) {
         this.maxIdleConnections = maxIdleConnections;
@@ -730,7 +711,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the authentication type.
-     * 
+     *
      * @return Authentication type
      */
     public AuthTypeEnum getAuthType() {
@@ -739,9 +720,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the authentication type.
-     * 
-     * @param authType
-     *            Authentication type
+     *
+     * @param authType Authentication type
      */
     public void setAuthType(AuthTypeEnum authType) {
         this.authType = authType;
@@ -749,7 +729,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Specify whether to use persistent connections.
-     * 
+     *
      * @return Identifier specifying whether to use the persistent connections
      */
     public boolean isKeepAlive() {
@@ -758,10 +738,9 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Check whether persistent connections are used.
-     * 
-     * @param keepAlive
-     *            Identifier specifying whether to use the persistent
-     *            connections
+     *
+     * @param keepAlive Identifier specifying whether to use the persistent
+     *                  connections
      */
     public void setKeepAlive(boolean keepAlive) {
         this.keepAlive = keepAlive;
@@ -769,7 +748,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Check whether protocol negotiation is used.
-     * 
+     *
      * @return Identifier specifying whether to use protocol negotiation
      */
     public boolean isAuthTypeNegotiation() {
@@ -778,9 +757,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Specify whether to use protocol negotiation.
-     * 
-     * @param authTypeNegotiation
-     *            Identifier specifying whether to use protocol negotiation
+     *
+     * @param authTypeNegotiation Identifier specifying whether to use protocol negotiation
      */
     public void setAuthTypeNegotiation(boolean authTypeNegotiation) {
         this.authTypeNegotiation = authTypeNegotiation;
@@ -788,7 +766,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Check whether user-defined domain name is used.
-     * 
+     *
      * @return Identifier specifying whether to use user-defined domain name
      */
     public boolean isCname() {
@@ -797,9 +775,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Specify whether to use user-defined domain name.
-     * 
-     * @param cname
-     *            Identifier specifying whether to use user-defined domain name
+     *
+     * @param cname Identifier specifying whether to use user-defined domain name
      */
     public void setCname(boolean cname) {
         this.cname = cname;
@@ -807,7 +784,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the provider of SSLContext.
-     * 
+     *
      * @return SSLContext provider
      */
     public String getSslProvider() {
@@ -816,9 +793,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the provider of SSLContext.
-     * 
-     * @param sslProvider
-     *            SSLContext provider
+     *
+     * @param sslProvider SSLContext provider
      */
     public void setSslProvider(String sslProvider) {
         this.sslProvider = sslProvider;
@@ -826,7 +802,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the HTTP type used for accessing WOS servers.
-     * 
+     *
      * @return HTTP type
      */
     public HttpProtocolTypeEnum getHttpProtocolType() {
@@ -835,9 +811,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the HTTP type used for accessing WOS servers.
-     * 
-     * @param httpProtocolType
-     *            HTTP type
+     *
+     * @param httpProtocolType HTTP type
      */
     public void setHttpProtocolType(HttpProtocolTypeEnum httpProtocolType) {
         this.httpProtocolType = httpProtocolType;
@@ -845,7 +820,7 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Set the customized dispatcher.
-     * 
+     *
      * @return Customized dispatcher
      */
     public Dispatcher getHttpDispatcher() {
@@ -854,9 +829,8 @@ public class WosConfiguration implements Cloneable {
 
     /**
      * Obtain the customized dispatcher.
-     * 
-     * @param httpDispatcher
-     *            Customized dispatcher
+     *
+     * @param httpDispatcher Customized dispatcher
      */
     public void setHttpDispatcher(Dispatcher httpDispatcher) {
         this.httpDispatcher = httpDispatcher;

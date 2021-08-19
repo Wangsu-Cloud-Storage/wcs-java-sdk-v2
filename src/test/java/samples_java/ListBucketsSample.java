@@ -26,14 +26,15 @@ public class ListBucketsSample {
         config.setSocketTimeout(30000);
         config.setConnectionTimeout(10000);
         config.setEndPoint(endPoint);
+        config.setRegionName(regionName);
         try {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
+            wosClient = new WosClient(ak, sk, config);
 
             List<WosBucket> buckets = wosClient.listBuckets();
-            for(WosBucket bucket : buckets){
+            for (WosBucket bucket : buckets) {
                 System.out.println("BucketName:" + bucket.getBucketName());
                 System.out.println("CreationDate:" + bucket.getCreationDate());
                 System.out.println("Endpoint:" + bucket.getEndpoint());

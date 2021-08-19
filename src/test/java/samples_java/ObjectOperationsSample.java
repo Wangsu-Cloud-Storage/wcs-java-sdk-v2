@@ -41,14 +41,14 @@ public class ObjectOperationsSample
         config.setConnectionTimeout(10000);
         config.setEndPoint(endPoint);
         config.setAuthType(AuthTypeEnum.V4);
-
+        config.setRegionName(regionName);
 
         try
         {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
+            wosClient = new WosClient(ak, sk, config);
 //
             /*
              * Create object

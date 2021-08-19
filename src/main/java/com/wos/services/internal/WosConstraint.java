@@ -71,7 +71,7 @@ public class WosConstraint {
 
     public static final int DEFAULT_CHUNK_SIZE = 4096;
 
-    public static String DEFAULT_BUCKET_LOCATION_VALUE = "default-region";
+    public static final String DEFAULT_BUCKET_LOCATION_VALUE = "default-region";
 
     public static final int DEFAULT_BUFFER_STREAM = 512 * 1024;// 512KB
 

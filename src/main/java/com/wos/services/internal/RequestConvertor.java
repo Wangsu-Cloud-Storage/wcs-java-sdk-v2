@@ -188,13 +188,13 @@ public class RequestConvertor extends RestStorageService {
             }
 
             long fileSize = request.getFile().length();
-            
+
             try {
                 request.setInput(new FileInputStream(request.getFile()));
             } catch (FileNotFoundException e) {
                 throw new IllegalArgumentException("File doesnot exist");
             }
-            
+
             if (request.getOffset() > 0 && request.getOffset() < fileSize) {
                 contentLengthValue = (contentLengthValue > 0 && contentLengthValue <= fileSize - request.getOffset())
                         ? contentLengthValue : fileSize - request.getOffset();
@@ -311,7 +311,6 @@ public class RequestConvertor extends RestStorageService {
     }
 
     /**
-     *
      * @param request
      * @param headers
      */
@@ -596,33 +595,33 @@ public class RequestConvertor extends RestStorageService {
             headers.put(key, value);
         }
     }
-    
+
     HeaderResponse build(Response res) {
         HeaderResponse response = new HeaderResponse();
         setResponseHeaders(response, this.cleanResponseHeaders(res));
         setStatusCode(response, res.code());
         return response;
     }
-    
+
     static HeaderResponse build(Map<String, Object> responseHeaders) {
         HeaderResponse response = new HeaderResponse();
         setResponseHeaders(response, responseHeaders);
         return response;
     }
-    
+
     Map<String, Object> cleanResponseHeaders(Response response) {
         Map<String, List<String>> map = response.headers().toMultimap();
         return ServiceUtils.cleanRestMetadataMap(map, this.getIHeaders().headerPrefix(),
                 this.getIHeaders().headerMetaPrefix());
     }
-    
+
     static void setStatusCode(HeaderResponse response, int statusCode) {
         response.setStatusCode(statusCode);
     }
 
-    protected String getCredential(String shortDate, String accessKey) {
+    protected String getCredential(String shortDate, String accessKey, String regionName) {
         return new StringBuilder(accessKey).append("/").append(shortDate).append("/")
-                .append(WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE).append("/").append(Constants.SERVICE).append("/")
+                .append(regionName).append("/").append(Constants.SERVICE).append("/")
                 .append(Constants.REQUEST_TAG).toString();
     }
 

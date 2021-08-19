@@ -38,12 +38,13 @@ public class ListObjectsV2Sample
         config.setSocketTimeout(30000);
         config.setConnectionTimeout(10000);
         config.setEndPoint(endPoint);
+        config.setRegionName(regionName);
         try
         {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
+            wosClient = new WosClient(ak, sk, config);
 
             final String content = "Hello WOS";
             final String keyPrefix = "MyObjectKey";

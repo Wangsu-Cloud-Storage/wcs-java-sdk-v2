@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This sample demonstrates how to create an empty folder under 
+ * This sample demonstrates how to create an empty folder under
  * specified bucket to WOS using the WOS SDK for Java.
  */
-public class CreateFolderSample
-{
+public class CreateFolderSample {
     private static final String endPoint = "https://your-endpoint";
 
     private static final String ak = "*** Provide your Access Key ***";
@@ -29,27 +28,26 @@ public class CreateFolderSample
     private static String bucketName = "my-wos-bucket-demo";
 
     private static String regionName = "my-wos-region-demo";
-    
+
     public static void main(String[] args)
-        throws IOException
-    {
+            throws IOException {
 
         WosConfiguration config = new WosConfiguration();
         config.setSocketTimeout(30000);
         config.setConnectionTimeout(10000);
         config.setEndPoint(endPoint);
-        try
-        {
-            
+        config.setRegionName(regionName);
+        try {
+
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
+            wosClient = new WosClient(ak, sk, config);
             List<String> keyFolders = new ArrayList<String>();
-            
+
             /*
              * Way 1:
-             * Create an empty folder without request body, note that the key must be 
+             * Create an empty folder without request body, note that the key must be
              * suffixed with a slash
              */
             final String keySuffixWithSlash1 = "MyObjectKey1/";
@@ -60,17 +58,17 @@ public class CreateFolderSample
             keyFolders.add(objectKey1);
             wosClient.putObject(bucketName, objectKey1, new ByteArrayInputStream("Hello WOS".getBytes()));
             System.out.println("Creating an empty folder " + keySuffixWithSlash1 + "\n");
-            
+
             /*
-             * Verify whether the size of the empty folder is zero 
+             * Verify whether the size of the empty folder is zero
              */
             WosObject object = wosClient.getObject(bucketName, keySuffixWithSlash1);
             System.out.println("Size of the empty folder '" + object.getObjectKey() + "' is " + object.getMetadata().getContentLength());
             object.getObjectContent().close();
-            
+
             /*
              * Way 2:
-             * Create an empty folder without request body, note that the key must be 
+             * Create an empty folder without request body, note that the key must be
              * suffixed with a slash
              */
             final String keySuffixWithSlash2 = "MyObjectKey2/";
@@ -85,44 +83,37 @@ public class CreateFolderSample
             keyFolders.add(objectKey2);
             wosClient.putObject(bucketName, objectKey2, new ByteArrayInputStream("Hello WOS".getBytes()));
             System.out.println("Creating an empty folder " + keySuffixWithSlash2 + "\n");
-            
+
             /*
-             * Verify whether the size of the empty folder is zero 
+             * Verify whether the size of the empty folder is zero
              */
             object = wosClient.getObject(bucketName, keySuffixWithSlash2);
             System.out.println("Size of the empty folder '" + object.getObjectKey() + "' is " + object.getMetadata().getContentLength());
             object.getObjectContent().close();
 
             deleteFolderOrObject(keyFolders);
-            
-        } catch (WosException e)
-        {
+
+        } catch (WosException e) {
             System.out.println("Response Code: " + e.getResponseCode());
             System.out.println("Error Message: " + e.getErrorMessage());
             System.out.println("Error Code:       " + e.getErrorCode());
             System.out.println("Request ID:      " + e.getErrorRequestId());
             System.out.println("Host ID:           " + e.getErrorHostId());
-        }
-        finally
-        {
-            if (wosClient != null)
-            {
-                try
-                {
+        } finally {
+            if (wosClient != null) {
+                try {
                     /*
                      * Close wos client
                      */
                     wosClient.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                 }
             }
         }
     }
 
     private static void deleteFolderOrObject(List<String> objectKeyFolders) {
-        for (String objectKey: objectKeyFolders) {
+        for (String objectKey : objectKeyFolders) {
             DeleteObjectResult deleteObjectsResult = wosClient.deleteObject(bucketName, objectKey);
             System.out.println("\t" + deleteObjectsResult.getObjectKey());
         }

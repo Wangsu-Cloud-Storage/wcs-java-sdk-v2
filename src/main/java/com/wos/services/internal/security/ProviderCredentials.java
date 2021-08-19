@@ -14,13 +14,15 @@ public class ProviderCredentials {
     protected AuthTypeEnum authType;
     private static ThreadLocal<AuthTypeEnum> threadLocalAuthType;
     private IWosCredentialsProvider wosCredentialsProvider;
+    private String regionName;
+
 
     public String getRegionName() {
-        return WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE;
+        return regionName;
     }
 
     public void setRegionName(String regionName) {
-        WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE = StringUtils.isEmpty(regionName) ? "default-region" : regionName;
+        this.regionName = StringUtils.isEmpty(regionName) ? WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE : regionName;
     }
 
     public ProviderCredentials(String accessKey, String secretKey) {

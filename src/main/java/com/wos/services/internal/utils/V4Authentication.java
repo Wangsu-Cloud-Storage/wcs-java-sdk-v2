@@ -54,10 +54,10 @@ public class V4Authentication {
         this.region = region;
     }
 
-    public static String caculateSignature(String stringToSign, String shortDate, String sk) throws Exception {
+    public static String caculateSignature(String stringToSign, String shortDate, String sk, String regionName) throws Exception {
         byte[] dateKey = V4Authentication.hmac_sha256Encode(("WOS" + sk).getBytes(Constants.DEFAULT_ENCODING),
                 shortDate);
-        byte[] dataRegionKey = V4Authentication.hmac_sha256Encode(dateKey, WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE);
+        byte[] dataRegionKey = V4Authentication.hmac_sha256Encode(dateKey, regionName);
 
         byte[] dateRegionServiceKey = V4Authentication.hmac_sha256Encode(dataRegionKey, Constants.SERVICE);
 

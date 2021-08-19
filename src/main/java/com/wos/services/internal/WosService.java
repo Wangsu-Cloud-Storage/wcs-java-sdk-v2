@@ -166,7 +166,7 @@ public class WosService extends RequestConvertor {
                 handler.getObjectKey() == null ? request.getKey() : handler.getObjectKey(),
                 handler.getUploadId() == null ? request.getUploadId() : handler.getUploadId(),
                 handler.getInitiator(), handler
-                        .getOwner(),
+                .getOwner(),
                 StorageClassEnum.getValueFromCode(handler.getStorageClass()), handler.getMultiPartList(),
                 handler.getMaxParts(), handler.isTruncated(),
                 handler.getPartNumberMarker() == null
@@ -288,6 +288,7 @@ public class WosService extends RequestConvertor {
         BasicSecurityKey securityKey = this.getProviderCredentials().getSecurityKey();
         String accessKey = securityKey.getAccessKey();
         String secretKey = securityKey.getSecretKey();
+        String regionName = this.getProviderCredentials().getRegionName();
         Date requestDate = request.getRequestDate() != null ? request.getRequestDate() : new Date();
         SimpleDateFormat expirationDateFormat = ServiceUtils.getExpirationDateFormat();
         Date expiryDate = request.getExpiryDate() == null ? new Date(requestDate.getTime()
@@ -302,7 +303,7 @@ public class WosService extends RequestConvertor {
 
         String shortDate = ServiceUtils.getShortDateFormat().format(requestDate);
         String longDate = ServiceUtils.getLongDateFormat().format(requestDate);
-        String credential = this.getCredential(shortDate, accessKey);
+        String credential = this.getCredential(shortDate, accessKey, regionName);
         if (request.getConditions() != null && !request.getConditions().isEmpty()) {
             originPolicy.append(ServiceUtils.join(request.getConditions(), ",")).append(",");
         } else {
@@ -360,7 +361,7 @@ public class WosService extends RequestConvertor {
         originPolicy.append("]}");
         String policy = ServiceUtils.toBase64(originPolicy.toString().getBytes(Constants.DEFAULT_ENCODING));
 
-        String signature = V4Authentication.caculateSignature(policy, shortDate, secretKey);
+        String signature = V4Authentication.caculateSignature(policy, shortDate, secretKey, regionName);
         return new PostSignatureResponse(policy, originPolicy.toString(), Constants.V4_ALGORITHM, credential,
                 longDate, signature, expiration);
     }
@@ -412,6 +413,7 @@ public class WosService extends RequestConvertor {
         BasicSecurityKey securityKey = this.getProviderCredentials().getSecurityKey();
         String accessKey = securityKey.getAccessKey();
         String secretKey = securityKey.getSecretKey();
+        String regionName = this.getProviderCredentials().getRegionName();
 
         String requestMethod = request.getMethod() != null ? request.getMethod().getOperationType() : "GET";
 
@@ -449,7 +451,7 @@ public class WosService extends RequestConvertor {
         String longDate = ServiceUtils.getLongDateFormat().format(requestDate);
 
         queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Algorithm", Constants.V4_ALGORITHM);
-        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Credential", this.getCredential(shortDate, accessKey));
+        queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Credential", this.getCredential(shortDate, accessKey, regionName));
         queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Date", longDate);
         queryParams.put(Constants.WOS_HEADER_PREFIX_CAMEL + "Expires",
                 request.getExpires() <= 0 ? WosConstraint.DEFAULT_EXPIRE_SECONEDS : request.getExpires());
@@ -498,11 +500,11 @@ public class WosService extends RequestConvertor {
                 .append("UNSIGNED-PAYLOAD");
 
         StringBuilder stringToSign = new StringBuilder(Constants.V4_ALGORITHM).append("\n").append(longDate)
-                .append("\n").append(shortDate).append("/").append(WosConstraint.DEFAULT_BUCKET_LOCATION_VALUE)
+                .append("\n").append(shortDate).append("/").append(regionName)
                 .append("/").append(Constants.SERVICE).append("/").append(Constants.REQUEST_TAG).append("\n")
                 .append(V4Authentication.byteToHex((V4Authentication.sha256encode(canonicalRequest.toString()))));
         signedUrl.append("&").append(Constants.WOS_HEADER_PREFIX_CAMEL).append("Signature=")
-                .append(V4Authentication.caculateSignature(stringToSign.toString(), shortDate, secretKey));
+                .append(V4Authentication.caculateSignature(stringToSign.toString(), shortDate, secretKey, regionName));
         TemporarySignatureResponse response = new TemporarySignatureResponse(signedUrl.toString());
         response.getActualSignedRequestHeaders().putAll(actualSignedRequestHeaders);
         return response;
@@ -653,8 +655,8 @@ public class WosService extends RequestConvertor {
     }
 
     protected Object getObjectImpl(boolean headOnly, String bucketName, String objectKey, Map<String, String> headers,
-            Map<String, String> params, ProgressListener progressListener, long progressInterval)
-                    throws ServiceException {
+                                   Map<String, String> params, ProgressListener progressListener, long progressInterval)
+            throws ServiceException {
         Response response;
         if (headOnly) {
             response = performRestHead(bucketName, objectKey, params, headers);

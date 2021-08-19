@@ -27,16 +27,12 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     private static final ILogger ILOG = LoggerBuilder.getLogger(WosClient.class);
 
-    private void init (String accessKey, String secretKey, String securityToken, WosConfiguration config) {
-        init(accessKey, secretKey, securityToken, config, null);
-    }
-
-    private void init(String accessKey, String secretKey, String securityToken, WosConfiguration config, String regionName) {
+    private void init(String accessKey, String secretKey, String securityToken, WosConfiguration config) {
         InterfaceLogBean reqBean = new InterfaceLogBean("WosClient", config.getEndPoint(), "");
         ProviderCredentials credentials = new ProviderCredentials(accessKey, secretKey, securityToken);
         WosProperties wosProperties = ServiceUtils.changeFromWosConfiguration(config);
         credentials.setAuthType(config.getAuthType());
-        credentials.setRegionName(regionName);
+        credentials.setRegionName(config.getRegionName());
         this.wosProperties = wosProperties;
         this.credentials = credentials;
         this.keyManagerFactory = config.getKeyManagerFactory();
@@ -74,9 +70,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param endPoint
-     *            WOS endpoint
-     *
+     * @param endPoint WOS endpoint
      */
     public WosClient(String endPoint) {
         WosConfiguration config = new WosConfiguration();
@@ -87,24 +81,20 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param endPoint
-     *            WOS endpoint
-     * @param regionName
-     *            the region name
-     *
+     * @param endPoint   WOS endpoint
+     * @param regionName the region name
      */
     public WosClient(String endPoint, String regionName) {
         WosConfiguration config = new WosConfiguration();
         config.setEndPoint(endPoint);
-        this.init("", "", null, config, regionName);
+        config.setRegionName(regionName);
+        this.init("", "", null, config);
     }
 
     /**
      * Constructor
      *
-     * @param config
-     *            Configuration parameters of WosClient
-     *
+     * @param config Configuration parameters of WosClient
      */
     public WosClient(WosConfiguration config) {
         if (config == null) {
@@ -116,29 +106,9 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param config
-     *            Configuration parameters of WosClient
-     * @param regionName
-     *            the region name
-     *
-     */
-    public WosClient(WosConfiguration config, String regionName) {
-        if (config == null) {
-            config = new WosConfiguration();
-        }
-        this.init("", "", null, config, regionName);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param accessKey
-     *            AK in the access key
-     * @param secretKey
-     *            SK in the access key
-     * @param endPoint
-     *            WOS endpoint
-     *
+     * @param accessKey AK in the access key
+     * @param secretKey SK in the access key
+     * @param endPoint  WOS endpoint
      */
     public WosClient(String accessKey, String secretKey, String endPoint) {
         WosConfiguration config = new WosConfiguration();
@@ -149,13 +119,9 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param accessKey
-     *            AK in the access key
-     * @param secretKey
-     *            SK in the access key
-     * @param config
-     *            Configuration parameters of WosClient
-     *
+     * @param accessKey AK in the access key
+     * @param secretKey SK in the access key
+     * @param config    Configuration parameters of WosClient
      */
     public WosClient(String accessKey, String secretKey, WosConfiguration config) {
         if (config == null) {
@@ -167,35 +133,10 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param accessKey
-     *            AK in the access key
-     * @param secretKey
-     *            SK in the access key
-     * @param config
-     *            Configuration parameters of WosClient
-     * @param regionName
-     *            the region name
-     *
-     */
-    public WosClient(String accessKey, String secretKey, WosConfiguration config, String regionName) {
-        if (config == null) {
-            config = new WosConfiguration();
-        }
-        this.init(accessKey, secretKey, null, config, regionName);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param accessKey
-     *            AK in the temporary access key
-     * @param secretKey
-     *            SK in the temporary access key
-     * @param securityToken
-     *            Security token
-     * @param endPoint
-     *            WOS endpoint
-     *
+     * @param accessKey     AK in the temporary access key
+     * @param secretKey     SK in the temporary access key
+     * @param securityToken Security token
+     * @param endPoint      WOS endpoint
      */
     public WosClient(String accessKey, String secretKey, String securityToken, String endPoint) {
         WosConfiguration config = new WosConfiguration();
@@ -206,64 +147,32 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Constructor
      *
-     * @param accessKey
-     *            AK in the temporary access key
-     * @param secretKey
-     *            SK in the temporary access key
-     * @param securityToken
-     *            Security token
-     * @param endPoint
-     *            WOS endpoint
-     * @param regionName
-     *            the region name
-     *
+     * @param accessKey     AK in the temporary access key
+     * @param secretKey     SK in the temporary access key
+     * @param securityToken Security token
+     * @param endPoint      WOS endpoint
+     * @param regionName    the region name
      */
     public WosClient(String accessKey, String secretKey, String securityToken, String endPoint, String regionName) {
         WosConfiguration config = new WosConfiguration();
         config.setEndPoint(endPoint);
-        this.init(accessKey, secretKey, securityToken, config, regionName);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param accessKey
-     *            AK in the temporary access key
-     * @param secretKey
-     *            SK in the temporary access key
-     * @param securityToken
-     *            Security token
-     * @param config
-     *            Configuration parameters of WosClient
-     *
-     */
-    public WosClient(String accessKey, String secretKey, String securityToken, WosConfiguration config) {
-        if (config == null) {
-            config = new WosConfiguration();
-        }
+        config.setRegionName(regionName);
         this.init(accessKey, secretKey, securityToken, config);
     }
 
     /**
      * Constructor
      *
-     * @param accessKey
-     *            AK in the temporary access key
-     * @param secretKey
-     *            SK in the temporary access key
-     * @param securityToken
-     *            Security token
-     * @param config
-     *            Configuration parameters of WosClient
-     * @param regionName
-     *            the region name
-     *
+     * @param accessKey     AK in the temporary access key
+     * @param secretKey     SK in the temporary access key
+     * @param securityToken Security token
+     * @param config        Configuration parameters of WosClient
      */
-    public WosClient(String accessKey, String secretKey, String securityToken, WosConfiguration config, String regionName) {
+    public WosClient(String accessKey, String secretKey, String securityToken, WosConfiguration config) {
         if (config == null) {
             config = new WosConfiguration();
         }
-        this.init(accessKey, secretKey, securityToken, config, regionName);
+        this.init(accessKey, secretKey, securityToken, config);
     }
 
     public WosClient(IWosCredentialsProvider provider, String endPoint) {
@@ -301,24 +210,16 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Create a temporarily authorized URL.
      *
-     * @param method
-     *            HTTP request method
-     * @param bucketName
-     *            Bucket name
-     * @param objectKey
-     *            Object name
-     * @param specialParam
-     *            Special operator
-     * @param expiryTime
-     *            Time when the temporary authentication expires
-     * @param headers
-     *            Header information
-     * @param queryParams
-     *            Query parameter information
+     * @param method       HTTP request method
+     * @param bucketName   Bucket name
+     * @param objectKey    Object name
+     * @param specialParam Special operator
+     * @param expiryTime   Time when the temporary authentication expires
+     * @param headers      Header information
+     * @param queryParams  Query parameter information
      * @return Temporarily authorized URL
-     * @throws WosException
-     *             WOS SDK self-defined exception, thrown when the interface
-     *             fails to be called or access to WOS fails
+     * @throws WosException WOS SDK self-defined exception, thrown when the interface
+     *                      fails to be called or access to WOS fails
      */
 
     public String createSignedUrl(HttpMethodEnum method, String bucketName, String objectKey,
@@ -332,28 +233,20 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Create a temporarily authorized URL.
      *
-     * @param method
-     *            HTTP request method
-     * @param bucketName
-     *            Bucket name
-     * @param objectKey
-     *            Object name
-     * @param specialParam
-     *            Special operator
-     * @param expires
-     *            Time when the temporary authentication expires. The unit is
-     *            second and the default value is 300.
-     * @param headers
-     *            Header information
-     * @param queryParams
-     *            Query parameter information
+     * @param method       HTTP request method
+     * @param bucketName   Bucket name
+     * @param objectKey    Object name
+     * @param specialParam Special operator
+     * @param expires      Time when the temporary authentication expires. The unit is
+     *                     second and the default value is 300.
+     * @param headers      Header information
+     * @param queryParams  Query parameter information
      * @return Temporarily authorized URL
-     * @throws WosException
-     *             WOS SDK self-defined exception, thrown when the interface
-     *             fails to be called or access to WOS fails
+     * @throws WosException WOS SDK self-defined exception, thrown when the interface
+     *                      fails to be called or access to WOS fails
      */
     public String createSignedUrl(HttpMethodEnum method, String bucketName, String objectKey,
-            SpecialParamEnum specialParam, long expires, Map<String, String> headers, Map<String, Object> queryParams) {
+                                  SpecialParamEnum specialParam, long expires, Map<String, String> headers, Map<String, Object> queryParams) {
         TemporarySignatureRequest request = new TemporarySignatureRequest();
         request.setMethod(method);
         request.setBucketName(bucketName);
@@ -392,20 +285,14 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Generate parameters for browser-based authorized access.
      *
-     * @param acl
-     *            Object ACL
-     * @param contentType
-     *            MIME type of the object
-     * @param expires
-     *            Validity period (in seconds)
-     * @param bucketName
-     *            Bucket name
-     * @param objectKey
-     *            Object name
+     * @param acl         Object ACL
+     * @param contentType MIME type of the object
+     * @param expires     Validity period (in seconds)
+     * @param bucketName  Bucket name
+     * @param objectKey   Object name
      * @return Response to the V4 browser-based authorized access
-     * @throws WosException
-     *             WOS SDK self-defined exception, thrown when the interface
-     *             fails to be called or access to WOS fails
+     * @throws WosException WOS SDK self-defined exception, thrown when the interface
+     *                      fails to be called or access to WOS fails
      */
     public PostSignatureResponse createPostSignature(String acl, String contentType, long expires, String bucketName,
                                                      String objectKey) throws WosException {
@@ -420,16 +307,12 @@ public class WosClient extends WosService implements Closeable, IWosClient {
     /**
      * Generate parameters for browser-based authorized access.
      *
-     * @param expires
-     *            Validity period (in seconds)
-     * @param bucketName
-     *            Bucket name
-     * @param objectKey
-     *            Object name
+     * @param expires    Validity period (in seconds)
+     * @param bucketName Bucket name
+     * @param objectKey  Object name
      * @return Response to the V4 browser-based authorized access
-     * @throws WosException
-     *             WOS SDK self-defined exception, thrown when the interface
-     *             fails to be called or access to WOS fails
+     * @throws WosException WOS SDK self-defined exception, thrown when the interface
+     *                      fails to be called or access to WOS fails
      */
     public PostSignatureResponse createPostSignature(long expires, String bucketName, String objectKey)
             throws WosException {
@@ -439,7 +322,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#createPostSignature(com.wos.services.model.
      * PostSignatureRequest)
@@ -823,7 +706,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#getObjectMetadata(com.wos.services.model.
      * GetObjectMetadataRequest)
@@ -844,7 +727,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#setObjectMetadata(com.wos.services.model.
      * SetObjectMetadataRequest)
@@ -1065,7 +948,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#initiateMultipartUpload(com.wos.services.
      * model.InitiateMultipartUploadRequest)
@@ -1086,7 +969,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#abortMultipartUpload(com.wos.services.model.
      * AbortMultipartUploadRequest)
@@ -1193,7 +1076,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#completeMultipartUpload(com.wos.services.
      * model.CompleteMultipartUploadRequest)
@@ -1238,7 +1121,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.wos.services.IWosClient#listMultipartUploads(com.wos.services.model.
      * ListMultipartUploadsRequest)

@@ -29,11 +29,12 @@ public class BucketLifecycleSample {
         config.setSocketTimeout(30000);
         config.setConnectionTimeout(10000);
         config.setEndPoint(endPoint);
+        config.setRegionName(regionName);
         try {
             /*
              * Constructs a wos client instance with your account for accessing WOS
              */
-            wosClient = new WosClient(ak, sk, config, regionName);
+            wosClient = new WosClient(ak, sk, config);
             doBucketLifecyclePrefix();
             doBucketLifecycleWholeBucket();
 
@@ -80,7 +81,7 @@ public class BucketLifecycleSample {
 
         sb.append("Getting bucket lifecycle:");
         LifecycleConfiguration result = wosClient.getBucketLifecycleConfiguration(bucketName);
-        for (LifecycleConfiguration.Rule r: result.getRules()) {
+        for (LifecycleConfiguration.Rule r : result.getRules()) {
             sb.append("\tRule: Id=" + r.getId() + ", Prefix=" + r.getPrefix() + ", Status=" + r.getEnabled() + ", ExpirationDays="
                     + r.getExpiration().getDays());
         }
@@ -111,7 +112,7 @@ public class BucketLifecycleSample {
 
         sb.append("Getting bucket lifecycle:");
         LifecycleConfiguration result = wosClient.getBucketLifecycleConfiguration(bucketName);
-        for (LifecycleConfiguration.Rule r: result.getRules()) {
+        for (LifecycleConfiguration.Rule r : result.getRules()) {
             sb.append("\tRule: Id=" + r.getId() + ", Prefix=" + r.getPrefix() + ", Status=" + r.getEnabled() + ", ExpirationDays="
                     + r.getExpiration().getDays());
         }
