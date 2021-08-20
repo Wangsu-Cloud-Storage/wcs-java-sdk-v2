@@ -112,6 +112,16 @@ for(WosObject wosObject : objectListing.getObjects()){
 ```
 wosClient.deleteObject("bucketname", "objectname");
 ```
+## 5.获取文件下载地址
+以下代码展示如何获取带鉴权信息的URL
+```
+TemporarySignatureRequest req = new TemporarySignatureRequest(HttpMethodEnum.GET, 300);
+req.setBucketName(bucketName);
+req.setObjectKey(objectKey);
+TemporarySignatureResponse res = wosClient.createTemporarySignature(req);
+System.out.println("Getting object using temporary signature url:");
+System.out.println("\t" + res.getSignedUrl());
+```
 
 ## 5.WOS客户端通用示例
 使用WOS客户端进行接口调用操作完成后，没有异常抛出，则表明返回值有效，返回SDK公共响应头实例或其子类实例；若抛出异常，则说明操作失败，此时应从SDK自定义异常实例中获取错误信息。
