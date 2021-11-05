@@ -72,7 +72,7 @@ WosConfiguration是WosClient的配置类，您可通过此类来连接超时、�
 |endPoint| 	连接WOS的服务地址。可包含协议类型、域名、端口号。示例：https://your-endpoint:443。	| WosConfiguration.setEndPoint
 |readBufferSize	| 从Socket流下载对象的缓存大小（单位：字节），-1表示不设置缓存。默认为-1。	| WosConfiguration.setReadBufferSize
 |writeBufferSize	| 上传对象到Socket流时的缓存大小（单位：字节），-1表示不设置缓存。默认为-1。	| WosConfiguration.setWriteBufferSize
-|pathStyle |  是否通过自定义域名访问WOS服务，默认为false。<br>false–使用bucketName.endpoint格式域名访问服务；<br>true-使用endpoint/bucketName格式域名访问服务。|WosConfiguration.setPathStyle
+|pathStyle |  指定访问WOS服务的域名格式，默认为false。<br>false–使用bucketName.endpoint格式域名访问服务；<br>true-使用endpoint/bucketName格式域名访问服务。|WosConfiguration.setPathStyle
 
 # 快速入门
 本文介绍如何快速使用WCS Java SDK完成常见操作，如上传文件（Object）、下载文件等。
