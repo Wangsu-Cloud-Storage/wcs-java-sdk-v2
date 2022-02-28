@@ -113,5 +113,4 @@ public abstract class SimpleHandler extends DefaultHandler {
     public void characters(char[] ch, int start, int length) {
         this.textBuffer.append(ch, start, length);
     }
-
 }

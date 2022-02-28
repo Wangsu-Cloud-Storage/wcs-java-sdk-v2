@@ -1761,3 +1761,173 @@ WosClient wosClient = new WosClient(ak, sk, config, regionName);
 
 wosClient.deleteBucketLifecycle("bucketname");
 ```
+# 音视频操作
+## 1.创建音视频解码任务
+您可以通过`wosClient.createAudioAndVideoTask`创建音视频解码任务，以下代码展示了如何创建视频解码任务.
+```
+WosConfiguration config = new WosConfiguration();
+config.setSocketTimeout(300000);
+config.setConnectionTimeout(100000);
+config.setEndPoint(endPoint);
+config.setRegionName(regionName);
+wosClient = new WosClient(ak, sk, config);
+
+List<AudioAndVideoOperationConfig> configList = new ArrayList<>();
+AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
+
+// param list
+LinkedHashMap<String, String> operationParams = new LinkedHashMap<>();
+operationParams.put("format", "mp4");
+operationParams.put("vb", "128k");
+audioAndVideoOperationConfig.setOperationParams(operationParams);
+
+// output info
+OutPutFileInfo outputFileInfo = new OutPutFileInfo();
+outputFileInfo.setOutputBucket(outputBucketName);
+outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(transcodedFileName, "utf-8"));
+audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
+configList.add(audioAndVideoOperationConfig);
+
+CreateAudioAndVideoTaskRequest createAudioAndVideoTaskRequest = new CreateAudioAndVideoTaskRequest();
+createAudioAndVideoTaskRequest.setBucketName(bucketName);
+createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
+createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Avthumb);
+createAudioAndVideoTaskRequest.setConfigList(configList);
+createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createAudioAndVideoTaskRequest.setForce(1);
+createAudioAndVideoTaskRequest.setSeparate(0);
+// create task
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+```
+## 2.创建音视频拼接任务
+您可以通过`wosClient.createAudioAndVideoTask`创建音视频解码任务，以下代码展示了如何创建视频拼接任务.
+```
+List<AudioAndVideoOperationConfig> configList = new ArrayList<>();
+
+
+AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
+// param list
+LinkedHashMap<String, String> operationParams = new LinkedHashMap<>();
+operationParams.put("format", "mp4");
+audioAndVideoOperationConfig.setOperationParams(operationParams);
+// List of side files
+List<String> fileList = new ArrayList<>();
+fileList.add(UrlCodecUtil.dataEncode(inputSideFile1, "utf-8"));
+fileList.add(UrlCodecUtil.dataEncode(inputSideFile2, "utf-8"));
+audioAndVideoOperationConfig.setFileList(fileList);
+// output file info
+OutPutFileInfo outputFileInfo = new OutPutFileInfo();
+outputFileInfo.setOutputBucket(outputBucketName);
+outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(videoConcatOutputFileName, "utf-8"));
+audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
+
+configList.add(audioAndVideoOperationConfig);
+
+
+CreateAudioAndVideoTaskRequest createAudioAndVideoTaskRequest = new CreateAudioAndVideoTaskRequest();
+createAudioAndVideoTaskRequest.setBucketName(bucketName);
+createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
+createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Avconcat);
+createAudioAndVideoTaskRequest.setConfigList(configList);
+createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createAudioAndVideoTaskRequest.setForce(1);
+createAudioAndVideoTaskRequest.setSeparate(0);
+// create task
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+```
+## 3.创建视频截图任务
+您可以通过`wosClient.createAudioAndVideoTask`创建视频截图任务，以下代码展示了如何创建视频截图任务.
+```
+List<AudioAndVideoOperationConfig> configList = new ArrayList<>();
+AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
+
+// param list
+LinkedHashMap<String, String> operationParams = new LinkedHashMap<>();
+operationParams.put("format", "jpg");
+operationParams.put("offset", "5");
+audioAndVideoOperationConfig.setOperationParams(operationParams);
+
+// output info
+OutPutFileInfo outputFileInfo = new OutPutFileInfo();
+outputFileInfo.setOutputBucket(outputBucketName);
+outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(outputSnapshotFileName, "utf-8"));
+audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
+configList.add(audioAndVideoOperationConfig);
+
+CreateAudioAndVideoTaskRequest createAudioAndVideoTaskRequest = new CreateAudioAndVideoTaskRequest();
+createAudioAndVideoTaskRequest.setBucketName(bucketName);
+createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
+createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Vframe);
+createAudioAndVideoTaskRequest.setConfigList(configList);
+createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createAudioAndVideoTaskRequest.setForce(1);
+createAudioAndVideoTaskRequest.setSeparate(0);
+// create task
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+```
+## 4.创建获取专辑图片任务
+您可以通过`wosClient.createAudioAndVideoTask`创建获取专辑图片任务，以下代码展示了如何创建获取专辑图片任务.
+```
+List<AudioAndVideoOperationConfig> configList = new ArrayList<>();
+AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
+
+// param list
+LinkedHashMap<String, String> operationParams = new LinkedHashMap<>();
+operationParams.put("format", "jpg");
+audioAndVideoOperationConfig.setOperationParams(operationParams);
+
+// output info
+OutPutFileInfo outputFileInfo = new OutPutFileInfo();
+outputFileInfo.setOutputBucket(outputBucketName);
+outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(albumCoverFileName, "utf-8"));
+audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
+configList.add(audioAndVideoOperationConfig);
+
+CreateAudioAndVideoTaskRequest createAudioAndVideoTaskRequest = new CreateAudioAndVideoTaskRequest();
+createAudioAndVideoTaskRequest.setBucketName(bucketName);
+createAudioAndVideoTaskRequest.setSourceFileName(albumFileName);
+createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Getapic);
+createAudioAndVideoTaskRequest.setConfigList(configList);
+createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createAudioAndVideoTaskRequest.setForce(1);
+createAudioAndVideoTaskRequest.setSeparate(0);
+
+// create task
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+```
+## 5.获取音视频任务详情
+您可以通过`wosClient.getAudioAndVideoTask`获取任务详情，以下代码展示了如何获取任务详细信息.
+``` 
+AudioAndVideoTaskDetailResult  audioAndVideoTaskResult = wosClient.getAudioAndVideoTask(bucketName, persistentId, AvOperationTypeEnum.Avthumb);
+```
+# 解压缩文件操作
+## 1.创建解压缩任务
+您可以通过`wosClient.createAudioAndVideoTask`创建解压缩文件任务，以下代码展示了如何创建获取解压缩文件任务.
+```
+AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
+
+LinkedHashMap<String, String> operationParams = new LinkedHashMap<>();
+operationParams.put("format", "zip");
+operationParams.put("crush", "0");
+audioAndVideoOperationConfig.setOperationParams(operationParams);
+
+OutPutFileInfo outputFileInfo = new OutPutFileInfo();
+outputFileInfo.setOutputBucket(bucketName);
+outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(decompressListFileName, "utf-8"));
+audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
+
+CreateDecompressTaskRequest createAudioAndVideoTaskRequest = new CreateDecompressTaskRequest();
+createAudioAndVideoTaskRequest.setBucketName(bucketName);
+createAudioAndVideoTaskRequest.setSourceFileName(sourceFileName);
+createAudioAndVideoTaskRequest.setConfig(audioAndVideoOperationConfig);
+createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createAudioAndVideoTaskRequest.setForce(1);
+
+// create task
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+```
+## 2.获取解压缩任务详情
+您可以通过`wosClient.getAudioAndVideoTask`获取任务详情，以下代码展示了如何获取任务详细信息.
+``` 
+wosClient.createDecompressTask(createAudioAndVideoTaskRequest)
+```

@@ -102,6 +102,7 @@ public class Constants {
         public static final String START_AFTER = "start-after";
         public static final String ENCODING_TYPE = "encoding-type";
         public static final String CONTINUATION_TOKEN = "continuation-token";
+        public static final String PERSISTENT_ID = "persistentId";
     }
 
     public static final Map<AuthTypeEnum, IHeaders> HEADERS_MAP;

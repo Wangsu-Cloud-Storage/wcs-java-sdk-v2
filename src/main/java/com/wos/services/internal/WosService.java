@@ -4,6 +4,7 @@ import com.wos.log.ILogger;
 import com.wos.log.LoggerBuilder;
 import com.wos.services.internal.Constants.CommonHeaders;
 import com.wos.services.internal.Constants.WosRequestParams;
+import com.wos.services.internal.handler.XmlRequestConstructHandler;
 import com.wos.services.internal.handler.XmlResponsesSaxParser;
 import com.wos.services.internal.io.HttpMethodReleaseInputStream;
 import com.wos.services.internal.io.ProgressInputStream;
@@ -11,6 +12,13 @@ import com.wos.services.internal.security.BasicSecurityKey;
 import com.wos.services.internal.utils.*;
 import com.wos.services.model.*;
 import com.wos.services.model.RestoreObjectRequest.RestoreObjectStatus;
+import com.wos.services.model.avOperation.AudioAndVideoTaskDetailResult;
+import com.wos.services.model.avOperation.AudioAndVideoTaskRequestResult;
+import com.wos.services.model.avOperation.AvOperationTypeEnum;
+import com.wos.services.model.avOperation.CreateAudioAndVideoTaskRequest;
+import com.wos.services.model.avOperation.CreateDecompressTaskRequest;
+import com.wos.services.model.avOperation.GetAudioAndVideoTaskRequest;
+import com.wos.services.model.avOperation.QueryDecompressResult;
 import okhttp3.Response;
 
 import java.io.BufferedInputStream;
@@ -893,5 +901,72 @@ public class WosService extends RequestConvertor {
                 .append(pathStyle || isCname ? "" : bucketName + ".").append(this.getEndpoint()).append(":")
                 .append(https ? this.getHttpsPort() : this.getHttpPort()).append("/")
                 .append(pathStyle ? bucketName + "/" : "").append(RestUtils.uriEncode(objectKey, false)).toString();
+    }
+
+    public AudioAndVideoTaskRequestResult createAudioAndVideoTaskImpl(CreateAudioAndVideoTaskRequest request) {
+        Map<String, String> metadata = new HashMap<String, String>();
+        metadata.put(CommonHeaders.CONTENT_TYPE, Mimetypes.MIMETYPE_XML);
+        Map<String, String> requestParameters = new HashMap<String, String>();
+        requestParameters.put(request.getOperationType().getCode(), "");
+        return getAudioAndVideoTaskRequestResponse(request.getBucketName(), request.getSourceFileName(), XmlRequestConstructHandler.convertToDifferentRootXml(request, request.getOperationType().getValue()), metadata, requestParameters);
+    }
+
+    public AudioAndVideoTaskRequestResult createDecompressTaskImpl(CreateDecompressTaskRequest request) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put(CommonHeaders.CONTENT_TYPE, Mimetypes.MIMETYPE_XML);
+        Map<String, String> requestParameters = new HashMap<String, String>();
+        requestParameters.put(AvOperationTypeEnum.Decompression.getCode(), "");
+        return getAudioAndVideoTaskRequestResponse(request.getBucketName(), request.getSourceFileName(), XmlRequestConstructHandler.convertToDifferentRootXml(request, AvOperationTypeEnum.Decompression.getValue()), metadata, requestParameters);
+    }
+
+    private AudioAndVideoTaskRequestResult getAudioAndVideoTaskRequestResponse(String bucketName, String sourceFileName, String xmlInfo, Map<String, String> metadata, Map<String, String> requestParameters) {
+        Response response = performRestPost(bucketName, sourceFileName, metadata,
+                requestParameters, createRequestBody(Mimetypes.MIMETYPE_XML, xmlInfo), false);
+
+        this.verifyResponseContentType(response);
+
+        XmlResponsesSaxParser.AudioAndVideoTaskCreateHandler handler = getXmlResponseSaxParser().parse(
+                new HttpMethodReleaseInputStream(response), XmlResponsesSaxParser.AudioAndVideoTaskCreateHandler.class, true);
+
+        AudioAndVideoTaskRequestResult ret = new AudioAndVideoTaskRequestResult(handler.getPersistentId(), handler.getOperationType());
+        Map<String, Object> map = this.cleanResponseHeaders(response);
+        setResponseHeaders(ret, map);
+        setStatusCode(ret, response.code());
+        return ret;
+    }
+
+
+
+    public AudioAndVideoTaskDetailResult getAudioAndVideoTaskDetailImpl(GetAudioAndVideoTaskRequest request) {
+        Map<String, String> requestParameters = new HashMap<String, String>();
+        requestParameters.put(request.getOperationType().getCode(), "");
+        requestParameters.put(WosRequestParams.PERSISTENT_ID, request.getPersistentId());
+
+        Response response = performRestGet(request.getBucketName(), null, requestParameters, null);
+
+        this.verifyResponseContentType(response);
+        AudioAndVideoTaskDetailResult ret = XmlResponsesSaxParser.parseAvTaskDetailXml(response);
+        if (ret == null) {
+            ret = new AudioAndVideoTaskDetailResult();
+        }
+        setResponseHeaders(ret, this.cleanResponseHeaders(response));
+        setStatusCode(ret, response.code());
+        return ret;
+    }
+
+    public QueryDecompressResult getDecompressTaskDetailImpl(GetAudioAndVideoTaskRequest request) {
+        Map<String, String> requestParameters = new HashMap<String, String>();
+        requestParameters.put(request.getOperationType().getCode(), "");
+        requestParameters.put(WosRequestParams.PERSISTENT_ID, request.getPersistentId());
+
+        Response response = performRestGet(request.getBucketName(), null, requestParameters, null);
+        this.verifyResponseContentType(response);
+        QueryDecompressResult ret = (QueryDecompressResult) XmlResponsesSaxParser.convertResponseToObject(QueryDecompressResult.class, response);
+        if (ret == null) {
+            ret = new QueryDecompressResult();
+        }
+        setResponseHeaders(ret, this.cleanResponseHeaders(response));
+        setStatusCode(ret, response.code());
+        return ret;
     }
 }

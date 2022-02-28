@@ -3,6 +3,12 @@ package com.wos.services;
 import com.wos.services.exception.WosException;
 import com.wos.services.model.*;
 import com.wos.services.model.RestoreObjectRequest.RestoreObjectStatus;
+import com.wos.services.model.avOperation.AudioAndVideoTaskDetailResult;
+import com.wos.services.model.avOperation.AudioAndVideoTaskRequestResult;
+import com.wos.services.model.avOperation.AvOperationTypeEnum;
+import com.wos.services.model.avOperation.CreateAudioAndVideoTaskRequest;
+import com.wos.services.model.avOperation.CreateDecompressTaskRequest;
+import com.wos.services.model.avOperation.QueryDecompressResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +118,7 @@ public interface IWosClient {
 
     /**
      * Identify whether a bucket exists.
-     * 
+     *
      * @param request
      *            Request parameters
      * @return Identifier indicating whether the bucket exists
@@ -136,7 +142,7 @@ public interface IWosClient {
 
     /**
      * Obtain a bucket ACL.
-     * 
+     *
      * @param request
      *            Request parameters for obtaining the bucket ACL
      * @return Response to a request for obtaining the bucket ACL
@@ -160,7 +166,7 @@ public interface IWosClient {
 
     /**
      * Obtain the bucket lifecycle rules.
-     * 
+     *
      * @param request
      *            Request parameters
      * @return Bucket lifecycle rules
@@ -186,7 +192,7 @@ public interface IWosClient {
 
     /**
      * Configure lifecycle rules for a bucket.
-     * 
+     *
      * @param request
      *            Request parameters
      * @return Common response headers
@@ -210,7 +216,7 @@ public interface IWosClient {
 
     /**
      * Delete the bucket lifecycle rules from a bucket.
-     * 
+     *
      * @param request
      *            Request parameters
      * @return Common response headers
@@ -305,7 +311,7 @@ public interface IWosClient {
 
     /**
      * Check whether an object exists.
-     * 
+     *
      * @param buckeName
      *            Bucket name
      * @param objectKey
@@ -318,7 +324,7 @@ public interface IWosClient {
 
     /**
      * Check whether an object exists.
-     * 
+     *
      * @param request
      *            Request parameters for obtaining the properties of an object
      * @return Whether an object exists
@@ -385,7 +391,7 @@ public interface IWosClient {
 
     /**
      * Set object properties.
-     * 
+     *
      * @param request
      *            Parameters in the request for obtaining object properties
      * @return Object properties
@@ -437,7 +443,7 @@ public interface IWosClient {
 
     /**
      * Delete an object.
-     * 
+     *
      * @param request
      *            Request parameters for deleting an object
      * @return Common response headers
@@ -476,7 +482,7 @@ public interface IWosClient {
 
     /**
      * Obtain an object ACL.
-     * 
+     *
      * @param request
      *            Request parameters for obtaining an object ACL
      * @return Object ACL
@@ -669,9 +675,19 @@ public interface IWosClient {
      */
     MultipartUploadListing listMultipartUploads(ListMultipartUploadsRequest request) throws WosException;
 
+
+    AudioAndVideoTaskRequestResult createAudioAndVideoTask(CreateAudioAndVideoTaskRequest request) throws WosException;
+
+    AudioAndVideoTaskRequestResult createDecompressTask(CreateDecompressTaskRequest request) throws WosException;
+
+    AudioAndVideoTaskDetailResult getAudioAndVideoTask(final String bucketName, final String persistentId, final AvOperationTypeEnum avOperationTypeEnum) throws WosException;
+
+    QueryDecompressResult getDecompressTask(final String bucketName, final String persistentId) throws WosException;
+
+
     /**
      * Close WosClient and release connection resources.
-     * 
+     *
      * @throws IOException
      *             WosClient close exception
      */

@@ -4,12 +4,74 @@ import com.wos.log.ILogger;
 import com.wos.log.InterfaceLogBean;
 import com.wos.log.LoggerBuilder;
 import com.wos.services.exception.WosException;
-import com.wos.services.internal.*;
+import com.wos.services.internal.Constants;
+import com.wos.services.internal.Constants.CommonHeaders;
+import com.wos.services.internal.ServiceException;
+import com.wos.services.internal.WosConstraint;
+import com.wos.services.internal.WosProperties;
+import com.wos.services.internal.WosService;
 import com.wos.services.internal.security.BasicSecurityKey;
 import com.wos.services.internal.security.ProviderCredentials;
-import com.wos.services.internal.utils.*;
-import com.wos.services.model.*;
-import com.wos.services.internal.Constants.CommonHeaders;
+import com.wos.services.internal.utils.AccessLoggerUtils;
+import com.wos.services.internal.utils.RestUtils;
+import com.wos.services.internal.utils.ServiceUtils;
+import com.wos.services.internal.utils.UrlCodecUtil;
+import com.wos.services.internal.utils.V4Authentication;
+import com.wos.services.model.AbortMultipartUploadRequest;
+import com.wos.services.model.AccessControlList;
+import com.wos.services.model.avOperation.AudioAndVideoTaskDetailResult;
+import com.wos.services.model.avOperation.AudioAndVideoTaskRequestResult;
+import com.wos.services.model.AuthTypeEnum;
+import com.wos.services.model.avOperation.AvOperationTypeEnum;
+import com.wos.services.model.BaseBucketRequest;
+import com.wos.services.model.CompleteMultipartUploadRequest;
+import com.wos.services.model.CompleteMultipartUploadResult;
+import com.wos.services.model.CopyObjectRequest;
+import com.wos.services.model.CopyObjectResult;
+import com.wos.services.model.CopyPartRequest;
+import com.wos.services.model.CopyPartResult;
+import com.wos.services.model.avOperation.CreateAudioAndVideoTaskRequest;
+import com.wos.services.model.avOperation.CreateDecompressTaskRequest;
+import com.wos.services.model.DeleteObjectRequest;
+import com.wos.services.model.DeleteObjectResult;
+import com.wos.services.model.DeleteObjectsRequest;
+import com.wos.services.model.DeleteObjectsResult;
+import com.wos.services.model.avOperation.GetAudioAndVideoTaskRequest;
+import com.wos.services.model.GetObjectAclRequest;
+import com.wos.services.model.GetObjectAvinfoRequest;
+import com.wos.services.model.GetObjectMetadataRequest;
+import com.wos.services.model.GetObjectRequest;
+import com.wos.services.model.HeaderResponse;
+import com.wos.services.model.HttpMethodEnum;
+import com.wos.services.model.InitiateMultipartUploadRequest;
+import com.wos.services.model.InitiateMultipartUploadResult;
+import com.wos.services.model.LifecycleConfiguration;
+import com.wos.services.model.ListBucketsResult;
+import com.wos.services.model.ListMultipartUploadsRequest;
+import com.wos.services.model.ListObjectsRequest;
+import com.wos.services.model.ListObjectsV2Request;
+import com.wos.services.model.ListPartsRequest;
+import com.wos.services.model.ListPartsResult;
+import com.wos.services.model.MultipartUploadListing;
+import com.wos.services.model.ObjectListing;
+import com.wos.services.model.ObjectMetadata;
+import com.wos.services.model.ObjectV2Listing;
+import com.wos.services.model.PostSignatureRequest;
+import com.wos.services.model.PostSignatureResponse;
+import com.wos.services.model.PutObjectRequest;
+import com.wos.services.model.PutObjectResult;
+import com.wos.services.model.avOperation.QueryDecompressResult;
+import com.wos.services.model.RestoreObjectRequest;
+import com.wos.services.model.RestoreObjectResult;
+import com.wos.services.model.SetBucketLifecycleRequest;
+import com.wos.services.model.SetObjectMetadataRequest;
+import com.wos.services.model.SpecialParamEnum;
+import com.wos.services.model.TemporarySignatureRequest;
+import com.wos.services.model.TemporarySignatureResponse;
+import com.wos.services.model.UploadPartRequest;
+import com.wos.services.model.UploadPartResult;
+import com.wos.services.model.WosBucket;
+import com.wos.services.model.WosObject;
 
 import java.io.Closeable;
 import java.io.File;
@@ -1249,7 +1311,6 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      */
     @Override
     public ListPartsResult listParts(final ListPartsRequest request) throws WosException {
-
         ServiceUtils.asserParameterNotNull(request, "ListPartsRequest is null");
         ServiceUtils.asserParameterNotNull2(request.getKey(), "objectKey is null");
         ServiceUtils.asserParameterNotNull(request.getUploadId(), "uploadId is null");
@@ -1283,6 +1344,95 @@ public class WosClient extends WosService implements Closeable, IWosClient {
                     }
                 });
 
+    }
+
+    /**
+     * method to create audio and video task
+     * @param request create decompression request
+     * @return task Id
+     * @throws WosException exception
+     */
+    @Override
+    public AudioAndVideoTaskRequestResult createAudioAndVideoTask(final CreateAudioAndVideoTaskRequest request) throws WosException {
+        ServiceUtils.asserParameterNotNull(request, "CreateAudioAndVideoTaskRequest is null");
+        ServiceUtils.asserParameterNotNull(request.getOperationType(), "operationType is null");
+        ServiceUtils.asserParameterNotNull(request.getSourceFileName(), "sourceFileName is null");
+        return this.doActionWithResult("createAudioAndVideoTask", request.getBucketName(),
+                new ActionCallbackWithResult<AudioAndVideoTaskRequestResult>() {
+                    @Override
+                    public AudioAndVideoTaskRequestResult action() throws ServiceException {
+                        return WosClient.this.createAudioAndVideoTaskImpl(request);
+                    }
+                });
+    }
+
+
+    /**
+     *
+     * @param bucketName source bucket name
+     * @param persistentId Id of the process for audio and video operation
+     * @param operationType AvOperationTypeEnum
+     * @return {@link AudioAndVideoTaskDetailResult}
+     */
+    @Override
+    public AudioAndVideoTaskDetailResult getAudioAndVideoTask(final String bucketName, final String persistentId, final AvOperationTypeEnum operationType)
+            throws WosException {
+        return getAudioAndVideoTaskDetail(new GetAudioAndVideoTaskRequest(bucketName, persistentId, operationType));
+    }
+
+
+    private AudioAndVideoTaskDetailResult getAudioAndVideoTaskDetail(final GetAudioAndVideoTaskRequest request) {
+        ServiceUtils.asserParameterNotNull(request.getBucketName(), "bucketName is null");
+        ServiceUtils.asserParameterNotNull(request.getOperationType(), "operationType is null");
+        ServiceUtils.asserParameterNotNull(request.getPersistentId(), "persistentId is null");
+        return this.doActionWithResult("getAudioAndVideoTaskDetail", request.getBucketName(),
+                new ActionCallbackWithResult<AudioAndVideoTaskDetailResult>() {
+                    @Override
+                    public AudioAndVideoTaskDetailResult action() throws ServiceException {
+                        return WosClient.this.getAudioAndVideoTaskDetailImpl(request);
+                    }
+                });
+    }
+
+
+    /**
+     * Note: The decompression operation and the audio and video operation have some similarities, so they share some objects
+     * @param request create decompression request
+     * @return task Id
+     * @throws WosException exception
+     */
+    @Override
+    public AudioAndVideoTaskRequestResult createDecompressTask(final CreateDecompressTaskRequest request) throws WosException {
+        ServiceUtils.asserParameterNotNull(request, "CreateAudioAndVideoTaskRequest is null");
+        ServiceUtils.asserParameterNotNull(request.getSourceFileName(), "sourceFileName is null");
+        return this.doActionWithResult("createAudioAndVideoTask", request.getBucketName(),
+                new ActionCallbackWithResult<AudioAndVideoTaskRequestResult>() {
+                    @Override
+                    public AudioAndVideoTaskRequestResult action() throws ServiceException {
+                        return WosClient.this.createDecompressTaskImpl(request);
+                    }
+                });
+    }
+
+    /**
+     * Note: The decompression operation and the audio and video operation have some similarities, so they share some objects
+     * @param bucketName source bucket name
+     * @param persistentId Id of the process for audio and video operation
+     * @return {@link QueryDecompressResult}
+     * @throws WosException exception
+     */
+    @Override
+    public QueryDecompressResult getDecompressTask(final String bucketName, final String persistentId)
+            throws WosException {
+        ServiceUtils.asserParameterNotNull(bucketName, "bucketName is null");
+        ServiceUtils.asserParameterNotNull(persistentId, "persistentId is null");
+        return this.doActionWithResult("getDecompressTask", bucketName,
+                new ActionCallbackWithResult<QueryDecompressResult>() {
+                    @Override
+                    public QueryDecompressResult action() throws ServiceException {
+                        return WosClient.this.getDecompressTaskDetailImpl(new GetAudioAndVideoTaskRequest(bucketName, persistentId, AvOperationTypeEnum.Decompression));
+                    }
+                });
     }
 
 

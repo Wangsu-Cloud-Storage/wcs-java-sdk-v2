@@ -4,12 +4,28 @@ import com.wos.log.ILogger;
 import com.wos.log.LoggerBuilder;
 import com.wos.services.internal.Constants;
 import com.wos.services.internal.ServiceException;
+import com.wos.services.internal.io.HttpMethodReleaseInputStream;
 import com.wos.services.internal.utils.ServiceUtils;
 import com.wos.services.model.*;
+import com.wos.services.model.avOperation.AudioAndVideoTaskDetailResult;
+import com.wos.services.model.avOperation.AvOperationTypeEnum;
+import com.wos.services.model.avOperation.QueryAvconcatResult;
+import com.wos.services.model.avOperation.QueryAvthumbResult;
+import com.wos.services.model.avOperation.QueryGetapicResult;
+import com.wos.services.model.avOperation.QueryVframeResult;
+import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -42,6 +58,7 @@ public class XmlResponsesSaxParser {
             ServiceUtils.closeStream(inputStream);
         }
     }
+
 
     protected InputStream sanitizeXmlDocument(InputStream inputStream) throws ServiceException {
         if (inputStream == null) {
@@ -103,6 +120,58 @@ public class XmlResponsesSaxParser {
             throw new ServiceException(e);
         }
     }
+
+    public static AudioAndVideoTaskDetailResult parseAvTaskDetailXml(Response response) {
+        Object xmlObject = null;
+        try {
+            JAXBContext context = JAXBContext.newInstance(QueryVframeResult.class, QueryAvthumbResult.class, QueryAvconcatResult.class, QueryGetapicResult.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            saxParserFactory.setNamespaceAware(false);
+            XMLReader xmlReader = saxParserFactory.newSAXParser().getXMLReader();
+            SAXSource source = new SAXSource(xmlReader, new InputSource(new HttpMethodReleaseInputStream(response)));
+            xmlObject = unmarshaller.unmarshal(source);
+        } catch (JAXBException | ParserConfigurationException | SAXException e) {
+            throw new ServiceException(e);
+        }
+        if (null == xmlObject) {
+            return null;
+        }
+
+        AudioAndVideoTaskDetailResult audioAndVideoTaskDetailResult = (AudioAndVideoTaskDetailResult)xmlObject;
+        if (xmlObject instanceof QueryAvthumbResult) {
+            audioAndVideoTaskDetailResult.setOperationType(AvOperationTypeEnum.Avthumb.getValue());
+        } else if (xmlObject instanceof QueryGetapicResult) {
+            audioAndVideoTaskDetailResult.setOperationType(AvOperationTypeEnum.Getapic.getValue());
+        } else if (xmlObject instanceof QueryAvconcatResult) {
+            audioAndVideoTaskDetailResult.setOperationType(AvOperationTypeEnum.Avconcat.getValue());
+        } else if (xmlObject instanceof QueryVframeResult) {
+            audioAndVideoTaskDetailResult.setOperationType(AvOperationTypeEnum.Vframe.getValue());
+        }
+        return audioAndVideoTaskDetailResult;
+    }
+
+
+
+    /**
+     * xml -> Object
+     */
+    public static Object convertResponseToObject(Class clazz, Response response) {
+        Object xmlObject = null;
+        try {
+            JAXBContext context = JAXBContext.newInstance(clazz);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            saxParserFactory.setNamespaceAware(false);
+            XMLReader xmlReader = saxParserFactory.newSAXParser().getXMLReader();
+            SAXSource source = new SAXSource(xmlReader, new InputSource(new HttpMethodReleaseInputStream(response)));
+            xmlObject = unmarshaller.unmarshal(source);
+        } catch (JAXBException | ParserConfigurationException | SAXException e) {
+            throw new ServiceException(e);
+        }
+        return xmlObject;
+    }
+
 
     public static class ListObjectsHandler extends DefaultXmlHandler {
         private WosObject currentObject;
@@ -1052,6 +1121,42 @@ public class XmlResponsesSaxParser {
             return etag;
         }
 
+    }
+
+    public static class AudioAndVideoTaskCreateHandler extends DefaultXmlHandler  {
+        private String operationType;
+
+        private String persistentId;
+
+        public String getPersistentId() {
+            return persistentId;
+        }
+
+        public void setPersistentId(String persistentId) {
+            this.persistentId = persistentId;
+        }
+
+        public String getOperationType() {
+            return operationType;
+        }
+
+        public void setOperationType(String operationType) {
+            this.operationType = operationType;
+        }
+
+        @Override
+        public void startElement(String name) {
+            if (!StringUtils.isEmpty(name) && name.endsWith("Result")) {
+                this.operationType = AvOperationTypeEnum.getTypeByValuePrefix(name);
+            }
+        }
+
+        @Override
+        public void endElement(String name, String elementText) {
+            if ("PersistentId".equals(name)) {
+                this.persistentId = elementText;
+            }
+        }
     }
 
     public static class DeleteObjectsHandler extends DefaultXmlHandler {
