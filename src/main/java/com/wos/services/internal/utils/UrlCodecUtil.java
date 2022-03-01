@@ -54,4 +54,15 @@ public class UrlCodecUtil {
         replaceResult = StringUtils.replacePattern(replaceResult,  "\\w|\\/|\\:|\\?|\\=|\\&|\\-|\\.", "");
         return StringUtils.isNotEmpty(replaceResult);
     }
+
+    public static String dataEncodeWithUtf(String strData) {
+        String encodeData = strData;
+        try {
+            encodeData = URLEncoder.encode(strData, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+        }
+        encodeData = StringUtils.replace(encodeData, "%2F", "/");
+        encodeData = StringUtils.replace(encodeData, "+", "%20");
+        return encodeData;
+    }
 }
