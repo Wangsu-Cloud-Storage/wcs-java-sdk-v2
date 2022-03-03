@@ -37,7 +37,7 @@ public class AudioAndVideoOperationConfig {
     /**
      * Specifies the list of secondary files to concatenate.
      * If there are more than one secondary files, FileList contains multiple names.
-     * @this attribute only use in file concat
+     * @field only use in file concat
      */
     @XmlElementWrapper(name = "FileList")
     @XmlElement(name = "FileName")
