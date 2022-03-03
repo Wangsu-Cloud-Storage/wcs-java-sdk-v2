@@ -75,14 +75,14 @@ public class DecompressOperationSample {
 
         OutPutFileInfo outputFileInfo = new OutPutFileInfo();
         outputFileInfo.setOutputBucket(bucketName);
-        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf(decompressListFileName));
+        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf8(decompressListFileName));
         audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
 
         CreateDecompressTaskRequest createAudioAndVideoTaskRequest = new CreateDecompressTaskRequest();
         createAudioAndVideoTaskRequest.setBucketName(bucketName);
         createAudioAndVideoTaskRequest.setSourceFileName(sourceFileName);
         createAudioAndVideoTaskRequest.setConfig(audioAndVideoOperationConfig);
-        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf(notificationUrl));
+        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf8(notificationUrl));
         createAudioAndVideoTaskRequest.setForce(1);
 
         String s = XmlRequestConstructHandler.convertToDifferentRootXml(createAudioAndVideoTaskRequest, AvOperationTypeEnum.Decompression.getValue());

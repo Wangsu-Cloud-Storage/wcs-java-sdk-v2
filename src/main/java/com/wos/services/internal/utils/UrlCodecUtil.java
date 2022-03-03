@@ -55,7 +55,7 @@ public class UrlCodecUtil {
         return StringUtils.isNotEmpty(replaceResult);
     }
 
-    public static String dataEncodeWithUtf(String strData) {
+    public static String dataEncodeWithUtf8(String strData) {
         String encodeData = strData;
         try {
             encodeData = URLEncoder.encode(strData, "UTF-8");

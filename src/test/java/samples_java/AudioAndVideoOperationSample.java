@@ -117,7 +117,7 @@ public class AudioAndVideoOperationSample {
         // output info
         OutPutFileInfo outputFileInfo = new OutPutFileInfo();
         outputFileInfo.setOutputBucket(outputBucketName);
-        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf(transcodedFileName));
+        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf8(transcodedFileName));
         audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
         configList.add(audioAndVideoOperationConfig);
 
@@ -126,7 +126,7 @@ public class AudioAndVideoOperationSample {
         createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
         createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Avthumb);
         createAudioAndVideoTaskRequest.setConfigList(configList);
-        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf(notificationUrl));
+        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf8(notificationUrl));
         createAudioAndVideoTaskRequest.setForce(1);
         createAudioAndVideoTaskRequest.setSeparate(0);
 
@@ -168,7 +168,7 @@ public class AudioAndVideoOperationSample {
         // output info
         OutPutFileInfo outputFileInfo = new OutPutFileInfo();
         outputFileInfo.setOutputBucket(outputBucketName);
-        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf(albumCoverFileName));
+        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf8(albumCoverFileName));
         audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
         configList.add(audioAndVideoOperationConfig);
 
@@ -177,7 +177,7 @@ public class AudioAndVideoOperationSample {
         createAudioAndVideoTaskRequest.setSourceFileName(albumFileName);
         createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Getapic);
         createAudioAndVideoTaskRequest.setConfigList(configList);
-        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf(notificationUrl));
+        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf8(notificationUrl));
         createAudioAndVideoTaskRequest.setForce(1);
         createAudioAndVideoTaskRequest.setSeparate(0);
 
@@ -223,7 +223,7 @@ public class AudioAndVideoOperationSample {
         // output info
         OutPutFileInfo outputFileInfo = new OutPutFileInfo();
         outputFileInfo.setOutputBucket(outputBucketName);
-        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf(outputSnapshotFileName));
+        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf8(outputSnapshotFileName));
         audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
         configList.add(audioAndVideoOperationConfig);
 
@@ -232,7 +232,7 @@ public class AudioAndVideoOperationSample {
         createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
         createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Vframe);
         createAudioAndVideoTaskRequest.setConfigList(configList);
-        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf(notificationUrl));
+        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf8(notificationUrl));
         createAudioAndVideoTaskRequest.setForce(1);
         createAudioAndVideoTaskRequest.setSeparate(0);
 
@@ -299,13 +299,13 @@ public class AudioAndVideoOperationSample {
         audioAndVideoOperationConfig.setOperationParams(operationParams);
         // List of side files
         List<String> fileList = new ArrayList<>();
-        fileList.add(UrlCodecUtil.dataEncodeWithUtf(inputSideFile1));
-        fileList.add(UrlCodecUtil.dataEncodeWithUtf(inputSideFile2));
+        fileList.add(UrlCodecUtil.dataEncodeWithUtf8(inputSideFile1));
+        fileList.add(UrlCodecUtil.dataEncodeWithUtf8(inputSideFile2));
         audioAndVideoOperationConfig.setFileList(fileList);
         // output file info
         OutPutFileInfo outputFileInfo = new OutPutFileInfo();
         outputFileInfo.setOutputBucket(outputBucketName);
-        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf(videoConcatOutputFileName));
+        outputFileInfo.setOutputKey(UrlCodecUtil.dataEncodeWithUtf8(videoConcatOutputFileName));
         audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
 
         configList.add(audioAndVideoOperationConfig);
@@ -316,7 +316,7 @@ public class AudioAndVideoOperationSample {
         createAudioAndVideoTaskRequest.setSourceFileName(objectKey);
         createAudioAndVideoTaskRequest.setOperationType(AvOperationTypeEnum.Avconcat);
         createAudioAndVideoTaskRequest.setConfigList(configList);
-        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf(notificationUrl));
+        createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncodeWithUtf8(notificationUrl));
         createAudioAndVideoTaskRequest.setForce(1);
         createAudioAndVideoTaskRequest.setSeparate(0);
 
