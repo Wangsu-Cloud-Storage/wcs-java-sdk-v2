@@ -154,7 +154,10 @@ public class XmlResponsesSaxParser {
 
 
     /**
-     * xml -> Object
+     * xml to Object
+     * @param clazz class
+     * @param response response data
+     * @return object
      */
     public static Object convertResponseToObject(Class clazz, Response response) {
         Object xmlObject = null;
