@@ -1373,6 +1373,7 @@ public class WosClient extends WosService implements Closeable, IWosClient {
      * @param persistentId Id of the process for audio and video operation
      * @param operationType AvOperationTypeEnum
      * @return {@link AudioAndVideoTaskDetailResult}
+     * @throws WosException if the operation type does not correspond to the persistent Id, 400 Bad Request will be thrown
      */
     @Override
     public AudioAndVideoTaskDetailResult getAudioAndVideoTask(final String bucketName, final String persistentId, final AvOperationTypeEnum operationType)

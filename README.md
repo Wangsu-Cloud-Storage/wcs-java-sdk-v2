@@ -1762,8 +1762,8 @@ WosClient wosClient = new WosClient(ak, sk, config, regionName);
 wosClient.deleteBucketLifecycle("bucketname");
 ```
 # 音视频操作
-## 1.创建音视频解码任务
-您可以通过`wosClient.createAudioAndVideoTask`创建音视频解码任务，以下代码展示了如何创建视频解码任务.
+## 1.创建音视频处理任务
+您可以通过`wosClient.createAudioAndVideoTask`创建音视频处理任务，以下代码展示了如何创建视频解码任务.
 ```
 WosConfiguration config = new WosConfiguration();
 config.setSocketTimeout(300000);
@@ -1800,7 +1800,7 @@ createAudioAndVideoTaskRequest.setSeparate(0);
 AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
 ```
 ## 2.创建音视频拼接任务
-您可以通过`wosClient.createAudioAndVideoTask`创建音视频解码任务，以下代码展示了如何创建视频拼接任务.
+您可以通过`wosClient.createAudioAndVideoTask`创建音视频拼接任务，以下代码展示了如何创建视频拼接任务.
 ```
 List<AudioAndVideoOperationConfig> configList = new ArrayList<>();
 
@@ -1902,7 +1902,7 @@ AudioAndVideoTaskDetailResult  audioAndVideoTaskResult = wosClient.getAudioAndVi
 ```
 # 解压缩文件操作
 ## 1.创建解压缩任务
-您可以通过`wosClient.createAudioAndVideoTask`创建解压缩文件任务，以下代码展示了如何创建获取解压缩文件任务.
+您可以通过`wosClient.createAudioAndVideoTask`创建解压缩文件任务，以下代码展示了如何创建解压缩文件任务.
 ```
 AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
 
@@ -1927,7 +1927,7 @@ createAudioAndVideoTaskRequest.setForce(1);
 AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
 ```
 ## 2.获取解压缩任务详情
-您可以通过`wosClient.getAudioAndVideoTask`获取任务详情，以下代码展示了如何获取任务详细信息.
+您可以通过`wosClient.getDecompressTask`获取任务详情，以下代码展示了如何获取任务详细信息.
 ``` 
-wosClient.createDecompressTask(createAudioAndVideoTaskRequest)
+wosClient.getDecompressTask(bucketName, persistentId);
 ```

@@ -97,6 +97,7 @@ public class AudioAndVideoOperationSample {
 
         // create video transcode task test
         //String persistentId = createTranscodeTask();
+
         // get task info detail
         AudioAndVideoTaskDetailResult taskInfoDetail = getTaskInfoDetail(persistentId);
 
@@ -265,7 +266,7 @@ public class AudioAndVideoOperationSample {
     private static AudioAndVideoTaskDetailResult getTaskInfoDetail(String persistentId) {
         AudioAndVideoTaskDetailResult audioAndVideoTaskResult = null;
         try {
-            audioAndVideoTaskResult = wosClient.getAudioAndVideoTask(bucketName, persistentId, AvOperationTypeEnum.Avthumb);
+            audioAndVideoTaskResult = wosClient.getAudioAndVideoTask(bucketName, persistentId, AvOperationTypeEnum.Vframe);
             System.out.println(audioAndVideoTaskResult);
         } catch (WosException e) {
             System.out.println("Response Code: " + e.getResponseCode());
