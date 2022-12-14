@@ -1924,7 +1924,7 @@ createDecompressTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl
 createDecompressTaskRequest.setForce(1);
 
 // create task
-AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createDecompressTask(createDecompressTaskRequest);
+AudioAndVideoTaskRequestResult decompressTask = wosClient.createDecompressTask(createDecompressTaskRequest);
 ```
 ## 2.获取解压缩任务详情
 您可以通过`wosClient.getDecompressTask`获取任务详情，以下代码展示了如何获取任务详细信息.
