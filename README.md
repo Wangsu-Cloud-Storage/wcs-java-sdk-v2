@@ -1902,7 +1902,7 @@ AudioAndVideoTaskDetailResult  audioAndVideoTaskResult = wosClient.getAudioAndVi
 ```
 # 解压缩文件操作
 ## 1.创建解压缩任务
-您可以通过`wosClient.createAudioAndVideoTask`创建解压缩文件任务，以下代码展示了如何创建解压缩文件任务.
+您可以通过`wosClient.createDecompressTask`创建解压缩文件任务，以下代码展示了如何创建解压缩文件任务.
 ```
 AudioAndVideoOperationConfig audioAndVideoOperationConfig = new AudioAndVideoOperationConfig();
 
@@ -1916,15 +1916,15 @@ outputFileInfo.setOutputBucket(bucketName);
 outputFileInfo.setOutputKey(UrlCodecUtil.dataEncode(decompressListFileName, "utf-8"));
 audioAndVideoOperationConfig.setOutPutFileInfo(outputFileInfo);
 
-CreateDecompressTaskRequest createAudioAndVideoTaskRequest = new CreateDecompressTaskRequest();
-createAudioAndVideoTaskRequest.setBucketName(bucketName);
-createAudioAndVideoTaskRequest.setSourceFileName(sourceFileName);
-createAudioAndVideoTaskRequest.setConfig(audioAndVideoOperationConfig);
-createAudioAndVideoTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
-createAudioAndVideoTaskRequest.setForce(1);
+CreateDecompressTaskRequest createDecompressTaskRequest = new CreateDecompressTaskRequest();
+createDecompressTaskRequest.setBucketName(bucketName);
+createDecompressTaskRequest.setSourceFileName(sourceFileName);
+createDecompressTaskRequest.setConfig(audioAndVideoOperationConfig);
+createDecompressTaskRequest.setNotifyUrl(UrlCodecUtil.dataEncode(notificationUrl, "utf-8"));
+createDecompressTaskRequest.setForce(1);
 
 // create task
-AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createAudioAndVideoTask(createAudioAndVideoTaskRequest);
+AudioAndVideoTaskRequestResult audioAndVideoTask = wosClient.createDecompressTask(createDecompressTaskRequest);
 ```
 ## 2.获取解压缩任务详情
 您可以通过`wosClient.getDecompressTask`获取任务详情，以下代码展示了如何获取任务详细信息.
