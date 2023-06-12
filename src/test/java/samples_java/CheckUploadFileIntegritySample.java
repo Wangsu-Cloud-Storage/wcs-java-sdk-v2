@@ -19,7 +19,7 @@ import java.util.UUID;
  * @since 2023/6/5 16:17
  */
 public class CheckUploadFileIntegritySample {
-    private static final String endPoint = "https://s3-cn-east-5.wcsapi.com";
+    private static final String endPoint = "https://your-endpoint";
 
     private static final String ak = "*** Provide your Access Key ***";
 
