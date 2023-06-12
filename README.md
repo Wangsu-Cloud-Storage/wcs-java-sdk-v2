@@ -1931,3 +1931,20 @@ AudioAndVideoTaskRequestResult decompressTask = wosClient.createDecompressTask(c
 ``` 
 wosClient.getDecompressTask(bucketName, persistentId);
 ```
+# Etag计算
+## 普通文件Etag计算
+您可以通过`EtagUtils.getFileEtag`方法进行本地计算Etag，代码展示了如何在本地计算文件Etag值，并与服务端文件的Etag进行对比
+```
+File sampleFile = createSampleFile(1000);
+// 生成本地文件 Etag
+String localEtag = EtagUtils.getFileEtag(bucketName, objectKey, sampleFile);
+// 上传文件
+PutObjectResult putObjectResult = wosClient.putObject(bucketName, objectKey, sampleFile);
+System.out.println("=====local etag value:" + localEtag + " server etag value:" + putObjectResult.getEtag());
+```
+## 分片上传文件Etag计算
+您可以通过`EtagUtils.getFileEtagByMultiPart`方法进行本地计算使用分片上传文件Etag，代码展示了如何在本地计算Etag值，详情见ConcurrentUploadPartSample.java
+```
+// 生成本地文件Etag
+String localEtag = EtagUtils.getFileEtagByMultiPart(sampleFile, partSize);
+```

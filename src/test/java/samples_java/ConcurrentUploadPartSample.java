@@ -1,5 +1,20 @@
 package samples_java;
 
+import com.wos.services.WosClient;
+import com.wos.services.WosConfiguration;
+import com.wos.services.exception.WosException;
+import com.wos.services.internal.utils.EtagUtils;
+import com.wos.services.model.CompleteMultipartUploadRequest;
+import com.wos.services.model.CompleteMultipartUploadResult;
+import com.wos.services.model.InitiateMultipartUploadRequest;
+import com.wos.services.model.InitiateMultipartUploadResult;
+import com.wos.services.model.ListPartsRequest;
+import com.wos.services.model.ListPartsResult;
+import com.wos.services.model.Multipart;
+import com.wos.services.model.PartEtag;
+import com.wos.services.model.UploadPartRequest;
+import com.wos.services.model.UploadPartResult;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,19 +28,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import com.wos.services.WosClient;
-import com.wos.services.WosConfiguration;
-import com.wos.services.exception.WosException;
-import com.wos.services.model.CompleteMultipartUploadRequest;
-import com.wos.services.model.InitiateMultipartUploadRequest;
-import com.wos.services.model.InitiateMultipartUploadResult;
-import com.wos.services.model.ListPartsRequest;
-import com.wos.services.model.ListPartsResult;
-import com.wos.services.model.Multipart;
-import com.wos.services.model.PartEtag;
-import com.wos.services.model.UploadPartRequest;
-import com.wos.services.model.UploadPartResult;
 
 /**
  * This sample demonstrates how to multipart upload an object concurrently
@@ -69,8 +71,10 @@ public class ConcurrentUploadPartSample {
             String uploadId = claimUploadId();
             System.out.println("Claiming a new upload id " + uploadId + "\n");
 
-            long partSize = 5 * 1024 * 1024l;// 5MB
+            long partSize = 5 * 1024 * 1024L;// 5MB
             File sampleFile = createSampleFile();
+            // 生成本地文件Etag
+            String localEtag = EtagUtils.getFileEtagByMultiPart(sampleFile, partSize);
             long fileLength = sampleFile.length();
 
             long partCount = fileLength % partSize == 0 ? fileLength / partSize : fileLength / partSize + 1;
@@ -120,7 +124,8 @@ public class ConcurrentUploadPartSample {
             /*
              * Complete to upload multiparts
              */
-            completeMultipartUpload(uploadId);
+            CompleteMultipartUploadResult completeMultipartUploadResult = completeMultipartUpload(uploadId);
+            System.out.println("local etag value:" + localEtag + " server etag value:" + completeMultipartUploadResult.getEtag());
 
         } catch (WosException e) {
             System.out.println("Response Code: " + e.getResponseCode());
@@ -206,7 +211,7 @@ public class ConcurrentUploadPartSample {
         return file;
     }
 
-    private static void completeMultipartUpload(String uploadId)
+    private static CompleteMultipartUploadResult completeMultipartUpload(String uploadId)
             throws WosException {
         // Make part numbers in ascending order
         Collections.sort(partETags, new Comparator<PartEtag>() {
@@ -220,7 +225,8 @@ public class ConcurrentUploadPartSample {
         System.out.println("Completing to upload multiparts\n");
         CompleteMultipartUploadRequest completeMultipartUploadRequest =
                 new CompleteMultipartUploadRequest(bucketName, objectKey, uploadId, partETags);
-        wosClient.completeMultipartUpload(completeMultipartUploadRequest);
+        CompleteMultipartUploadResult completeMultipartUploadResult = wosClient.completeMultipartUpload(completeMultipartUploadRequest);
+        return completeMultipartUploadResult;
     }
 
     private static void listAllParts(String uploadId)
