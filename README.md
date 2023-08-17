@@ -35,21 +35,20 @@ WCS Java SDK Rest V2提供丰富的示例代码，方便您参考或直接使用
 ## 初始化
 WosClient是Java客户端，用于管理存储空间和文件等资源。使用Java SDK发起对象操作请求，您需要初始化一个WosClient实例，并根据需要修改WosConfiguration的默认配置项。
 ```
+String endPoint = "https://your-endpoint";
+String regionName = "your regionName";
+String ak = "*** Provide your Access Key ***";
+String sk = "*** Provide your Secret Key ***";
+
 WosConfiguration config = new WosConfiguration();
 config.setSocketTimeout(30000);
 config.setConnectionTimeout(10000);
 config.setEndPoint(endPoint);
+config.setRegionName(regionName);
 
-String endPoint = "https://your-endpoint";
-String ak = "*** Provide your Access Key ***";
-String sk = "*** Provide your Secret Key ***";
-```
 
-### 创建WosClient实例
-```
-WosClient wosClient = new WosClient(ak, sk, config, regionName);
-
-### 使用访问WOS
+//创建WosClient实例
+WosClient wosClient = new WosClient(ak, sk, config);
         
 // 关闭wosClient
 wosClient.close();
@@ -144,10 +143,19 @@ WosClient wosClient = null;
 try
 {
     String endPoint = "https://your-endpoint";
+    String regionName = "your regionName";
     String ak = "*** Provide your Access Key ***";
     String sk = "*** Provide your Secret Key ***";
+
+    // 创建config
+    WosConfiguration config = new WosConfiguration();
+    config.setSocketTimeout(30000);
+    config.setConnectionTimeout(10000);
+    config.setEndPoint(endPoint);
+    config.setRegionName(regionName);
+
     // 创建WosClient实例
-    wosClient = new WosClient(ak, sk, endPoint, regionName);
+    wosClient = new WosClient(ak, sk, config);
     // 调用接口进行操作，例如上传对象
     HeaderResponse response = wosClient.putObject("bucketname", "objectname", new File("localfile"));  // localfile为待上传的本地文件路径，需要指定到具体的文件名
     System.out.println(response);
