@@ -34,25 +34,25 @@
 
     <Loggers>
     	<!-- north log -->
-        <Logger name="com.wos.services.WosClient" level="DEBUG"
+        <Logger name="com.wos.services.WosClient" level="INFO"
                 additivity="false">
             <AppenderRef ref="NorthInterfaceLogAppender" />
         </Logger>
         
         <!-- south log -->
-        <Logger name="com.wos.services.internal.RestStorageService" level="DEBUG"
+        <Logger name="com.wos.services.internal.RestStorageService" level="INFO"
                 additivity="false">
             <AppenderRef ref="SouthInterfaceLogAppender" />
         </Logger>
 
         <!-- access log -->
-        <Logger name="com.wos.log.AccessLogger" level="DEBUG"
+        <Logger name="com.wos.log.AccessLogger" level="INFO"
                 additivity="false">
             <AppenderRef ref="AccessLogAppender" />
         </Logger>
         
         <!-- console log -->
-        <Root level="DEBUG">
+        <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
     </Loggers>
